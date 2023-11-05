@@ -1,4 +1,0 @@
-module Z80Kaa (
-input clk
-)
-endmodule

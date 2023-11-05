@@ -1,50 +1,128 @@
-    ; указываем ассемблеру, что целевая платформа - spectrum128(pentagon)
-    device none
-
-    SIZE 32768
-    OUTPUT "test.bin",t  
-
-    ; адрес на который компилировать
-    org 0x1000
-    
-begin_file:
-    ; запрещаем прерывания
+    ; указываем ассемблеру, что целевая платформа - spectrum48, хотя это и не так, но похуй...
+    device ZXSPECTRUM48
+    ;SIZE 32768
+begin:
+    org 0x0000
+    ; Запрещаем прерывания.
     di
-    ; устанавливаем дно стека
-    ld sp,#6100
-    ; ld hl,#DEC0:push hl
+    jp start
+
+    org 0x0038
+    jp interrupt
+        
+interrupt
+    di
+    push af
+    push bc
+    ;int programm
+    call LCD1602
+    ; end int programm
+    ld bc, 256
+intdelay
+    dec bc
+    ld a,b
+    or c
+    jr nz,intdelay
+    pop bc
+    pop af
+    ei
+    reti
+
+    org 0x0100
+start:
+    ; Устанавливаем дно стека.
+    ld sp, 0x7fff
+    call LCD1602_init
+    ; Разрешаем прерывания.
+    ei    
     ld a,0
 loop:
-    ;выводим в порт 0xFE  
-    inc a
-    out (#fe),a
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ; Увеличиваем регистр а.
+    ;inc a
+    ;ld a, (cnt)
+    ; Выводим в порт 0xFE.
+    ;out (0xfe), a
     
-    nop:nop:nop; nop:nop:nop занимает столько же тактов, что и jr n (12)
-    
-    ;выводим в порт 0xFE  
-    inc a
-    out (#fe),a
+    ; Задержка.
+    call delay100
 
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
- 
-    jr loop
-    
-end_file:
-    ; выводим размер банарника
-    display "code size: ", /d, end_file - begin_file
+    jr loop 
 
+; Процедура вывода на экран LCD1602
+LCD1602_init
+    push af
+    push bc
+    ld a, 0x38
+    call LCD1602_CMD
+    ld a, 0x0c
+    call LCD1602_CMD
+    ld a, 0x06
+    call LCD1602_CMD
+    ld a, 0x01
+    call LCD1602_CMD
+    ld a, 0x80
+    call LCD1602_CMD
+    ret
+LCD1602
+    ld a, "Z"
+    call LCD1602_DATA
+    ld a, "8"
+    call LCD1602_DATA
+    ld a, "0"
+    call LCD1602_DATA
+    ld a, "K"
+    call LCD1602_DATA
+    ld a, "a"
+    call LCD1602_DATA
+    ld a, "a"
+    call LCD1602_DATA
+    
+    pop bc
+    pop af
+    ret
+
+LCD1602_CMD
+    push af
+    ld a, 0b00000000
+    out (0xfe), a
+    call delay100
+    call delay100
+    call delay100
+    pop af
+    out (0xfd), a
+    ret
+
+LCD1602_DATA
+    push af
+    ld a, 0b00000100
+    out (0xfe), a
+    call delay100
+    call delay100
+    call delay100
+    
+    pop af
+    out (0xfd), a
+    ret
+
+; Процедура задержки
+delay100
+    push af
+    push bc
+    ld bc, 1000
+delay
+    dec bc
+    ld a, b
+    or c
+    jr nz, delay
+    pop bc
+    pop af
+    ret
+
+cnt db 0
+portfe db 0
+
+
+end:
+    ; Выводим размер банарника.
+    display "code size: ", /d, end - begin
+    SAVEBIN "test.bin", begin, 32768; 32768 - размер бинарного файла для прошивки ПЗУ\ОЗУ

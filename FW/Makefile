@@ -1,9 +1,9 @@
 
 build:
-	sjasmplus hello.asm --nofakes
+	sjasmplus hello.asm --syntax=F
 
 clean:
-	rm -f *.sna
-	rm -f user.l
+	rm -f *.bin
+	#rm -f user.l
 
 .PHONY: all build clean
