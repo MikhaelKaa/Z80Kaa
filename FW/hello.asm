@@ -32,6 +32,27 @@ intdelay
 start:
     ; Устанавливаем дно стека.
     ld sp, 0x7fff
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    call delay100
+    
     call LCD1602_init
     ; Разрешаем прерывания.
     ei    
@@ -62,19 +83,24 @@ LCD1602_init
     call LCD1602_CMD
     ld a, 0x80
     call LCD1602_CMD
+    pop bc
+    pop af
     ret
+
 LCD1602
-    ld a, "Z"
+    push af
+    push bc
+    ld a, 'Z'
     call LCD1602_DATA
-    ld a, "8"
+    ld a, '8'
     call LCD1602_DATA
-    ld a, "0"
+    ld a, '0'
     call LCD1602_DATA
-    ld a, "K"
+    ld a, 'K'
     call LCD1602_DATA
-    ld a, "a"
+    ld a, 'a'
     call LCD1602_DATA
-    ld a, "a"
+    ld a, 'a'
     call LCD1602_DATA
     
     pop bc
@@ -82,26 +108,34 @@ LCD1602
     ret
 
 LCD1602_CMD
+    call delay100
     push af
-    ld a, 0b00000000
+    ld a, 0b10000000
     out (0xfe), a
-    call delay100
-    call delay100
+
     call delay100
     pop af
     out (0xfd), a
+
+    call delay100
+    ld a, 0b00000000
+    out (0xfe), a
     ret
 
 LCD1602_DATA
+    call delay100
     push af
-    ld a, 0b00000100
+    ld a, 0b10000100
     out (0xfe), a
+
     call delay100
-    call delay100
-    call delay100
-    
     pop af
     out (0xfd), a
+
+    call delay100
+    ld a, 0b00000000
+    out (0xfe), a
+
     ret
 
 ; Процедура задержки

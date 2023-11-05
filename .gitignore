@@ -6,3 +6,4 @@
 /CPLD/db
 /CPLD/Z80Kaa.qws
 *.bak
+/FW/*.bin
