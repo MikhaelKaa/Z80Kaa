@@ -15,7 +15,7 @@ interrupt
     push af
     push bc
     ;int programm
-    call LCD1602
+
     ; end int programm
     ld bc, 256
 intdelay
@@ -32,28 +32,6 @@ intdelay
 start:
     ; Устанавливаем дно стека.
     ld sp, 0x7fff
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    
-    call LCD1602_init
     ; Разрешаем прерывания.
     ei    
     ld a,0
@@ -62,6 +40,15 @@ loop:
     ;inc a
     ;ld a, (cnt)
     ; Выводим в порт 0xFE.
+
+
+    in a, (0xfe)
+    cp a, 0b11111101
+    jp z, LCD1602_init
+
+    in a, (0xfe)
+    cp a, 0b11111011
+    jp z, LCD1602
     ;out (0xfe), a
     
     ; Задержка.

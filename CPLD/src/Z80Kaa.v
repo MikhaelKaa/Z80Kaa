@@ -25,7 +25,10 @@ output led,
 // LCD1602
 output lcd_e,
 output lcd_rw,
-output lcd_rs
+output lcd_rs,
+
+// Keyboard
+output KBD
 
 );
 
@@ -62,9 +65,9 @@ always @(negedge IOWR or negedge rst) begin
 	end
 end
 
-assign led = reg_fe[7];
+assign led = reg_fe[0];
 assign lcd_e = ~(IOWR | ~(adr == 3'b101));
 assign lcd_rw = reg_fe[1];
 assign lcd_rs = reg_fe[2];
-
+assign KBD =  (~IORD & (adr == 3'b110))?(1'b0):(1'bz);
 endmodule
