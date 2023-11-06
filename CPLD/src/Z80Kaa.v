@@ -39,8 +39,8 @@ always@(negedge in_clock) begin
 end
 
 // Z80 clock.
-assign cpu_clock = clk_div[4];
-//assign cpu_clock = reg_fe[0]?clk_div[4]:clk_div[3];
+assign cpu_clock = clk_div[1];
+//assign cpu_clock = reg_fe[3]?clk_div[4]:clk_div[3];
 
 // M48Z35Y
 assign E = mreq;
@@ -51,8 +51,8 @@ assign W = wr;
 // io
 wire IOWR = iorq | wr;
 wire IORD = iorq | rd;
-
-
+wire port_fe = (adr == 3'b110);
+wire port_fd = (adr == 3'b101);
 // testpin
 reg [7:0] reg_fe = 8'b1;
 
@@ -60,14 +60,14 @@ always @(negedge IOWR or negedge rst) begin
 	if(rst == 1'b0) begin
 		reg_fe = 8'b0;
 	end else
-	if(adr == 3'b110) begin
+	if(port_fe) begin
 		reg_fe = data;
 	end
 end
 
 assign led = reg_fe[0];
-assign lcd_e = ~(IOWR | ~(adr == 3'b101));
+assign lcd_e = ~(IOWR | ~(port_fd)); //fd
 assign lcd_rw = reg_fe[1];
 assign lcd_rs = reg_fe[2];
-assign KBD =  (~IORD & (adr == 3'b110))?(1'b0):(1'bz);
+assign KBD =  (IORD | ~(port_fe))?(1'bz):(1'b0); //fe
 endmodule

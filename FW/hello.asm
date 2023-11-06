@@ -22,7 +22,7 @@ intdelay
     dec bc
     ld a,b
     or c
-    jr nz,intdelay
+    jr nz, intdelay
     pop bc
     pop af
     ei
@@ -44,13 +44,36 @@ loop:
 
     in a, (0xfe)
     cp a, 0b11111101
-    jp z, LCD1602_init
+    jp z, up
 
     in a, (0xfe)
     cp a, 0b11111011
-    jp z, LCD1602
-    ;out (0xfe), a
+    jp z, down
+
+    in a, (0xfe)
+    cp a, 0b11111110
+    jp z, ok
+
+    jp (skip)
+
+up
+    call LCD1602
+    jp (skip)
+
+down
+    call LCD1602_init
+    jp (skip)
+ok
+    ld a, 0b00000000
+    out (0xfe), A
+    call delay100
+    call delay100
+    call delay100
+    call delay100
     
+    ld a, 0b00000001
+    out (0xfe), A
+skip
     ; Задержка.
     call delay100
 
@@ -89,10 +112,26 @@ LCD1602
     call LCD1602_DATA
     ld a, 'a'
     call LCD1602_DATA
+    ld a, ' '
+    call LCD1602_DATA
+    pop bc
+    pop af
+    ret
+
+EBA
+    push af
+    push bc
+    ld a, 'E'
+    call LCD1602_DATA
+    ld a, 'B'
+    call LCD1602_DATA
+    ld a, 'A'
+    call LCD1602_DATA
     
     pop bc
     pop af
     ret
+
 
 LCD1602_CMD
     call delay100
@@ -103,10 +142,10 @@ LCD1602_CMD
     call delay100
     pop af
     out (0xfd), a
-
     call delay100
-    ld a, 0b00000000
-    out (0xfe), a
+
+    ;ld a, 0b00000000
+    ;out (0xfe), a
     ret
 
 LCD1602_DATA
@@ -118,10 +157,10 @@ LCD1602_DATA
     call delay100
     pop af
     out (0xfd), a
-
     call delay100
-    ld a, 0b00000000
-    out (0xfe), a
+
+    ;ld a, 0b00000000
+    ;out (0xfe), a
 
     ret
 
