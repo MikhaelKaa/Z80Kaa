@@ -1,6 +1,3 @@
-[submodule "altium_libs"]
-	path = altium_libs
-	url = https://github.com/MikhaelKaa/altium_libs.git
 [submodule "HW/altium_libs"]
 	path = HW/altium_libs
 	url = https://github.com/MikhaelKaa/altium_libs.git
