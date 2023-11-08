@@ -64,6 +64,8 @@
     "jas2l.h": "c",
     "app_dac.h": "c",
     "doors_pas.h": "c",
-    "stm32f7xx.h": "c"
+    "stm32f7xx.h": "c",
+    "stm32f1xx_ll_rcc.h": "c",
+    "stm32f1xx.h": "c"
   },
 }

@@ -18,13 +18,15 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "usart.h"
-#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include "retarget.h"
+#include "z80ramm.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,7 +47,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint8_t rx1[2];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -87,18 +89,26 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART1_UART_Init();
-  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_Delay(10);
+  HAL_UART_Receive_DMA(&huart1, (uint8_t*)rx1, sizeof(rx1));
+  printf("Prog start\r\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-    HAL_Delay(500);
+    //HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    //HAL_Delay(500);
+    // LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
+    // for(int n = 0; n<655350; n++) asm("NOP");
+    // LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
+    for(int n = 0; n<655350; n++) asm("NOP");
+    // printf("test\r\n");
+    printf_flush();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -148,11 +158,61 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL_DIV_1_5);
 }
 
 /* USER CODE BEGIN 4 */
+void case_help(void);
+void case_help(void) {
+  printf("\
+  h - tsis help message\r\n\
+  i - init pins to work, z80 stopped\r\n\
+  d - deinit pins to work z80 run\r\n\
+  r - test read\r\n\
+  w - test write\r\n\
+  \r\n");
+}
+void control(uint8_t cmd) {
+    LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
+    for(int n = 0; n<65535; n++) asm("NOP");
+    LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
+    for(int n = 0; n<65535; n++) asm("NOP");
+    switch (cmd) {
+    case 'i': z80ramm_init(); break;
+    case 'd': z80ramm_deinit(); break;
+    case 'r': z80ramm_read(0); break;
+    case 'w': z80ramm_write(0, 255); break;
+    /*
+    case 'v': dcmi_resume(); break;
+    case 'b': dcmi_toogle_HS_polarity(); break;
+    case 'n': dcmi_toogle_VS_polarity(); break;
+    case 'm': dcmi_toogle_PIXCLK_edge(); break;
+    case 'p': print_all_param(); break;
+    case 'q': inc_test_offset(); break;
+    case 'a': dec_test_offset(); break;
+    case '1': load_gmx_scorpion_set(); break;
+    case '2': load_gmx_pentagon_set(); break;
+    case 'w': offset_x++; break;
+    case 's': offset_x--; break;
+    case 'e': offset_y++; break;
+    case 'd': offset_y--; break;*/
+    
+    default: printf("Unknown cmd\r\n"); break;
+  }
+}
+void (*uart_rx_callback)(uint8_t) = control;
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if (huart->Instance == USART1) {
+    uart_rx_callback(rx1[1]);
+  }
+}
 
+void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart)
+{
+  if (huart->Instance == USART1) {
+    uart_rx_callback(rx1[0]);
+  }
+}
 /* USER CODE END 4 */
 
 /**
