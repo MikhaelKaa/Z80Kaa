@@ -7,3 +7,5 @@
 /CPLD/Z80Kaa.qws
 *.bak
 /FW/*.bin
+/Prog/build
+/HW/*.log
