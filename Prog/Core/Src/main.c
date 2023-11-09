@@ -18,8 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "dma.h"
-#include "usart.h"
+#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -89,11 +88,10 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_USART1_UART_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
   HAL_Delay(10);
-  HAL_UART_Receive_DMA(&huart1, (uint8_t*)rx1, sizeof(rx1));
+  //HAL_UART_Receive_DMA(&huart1, (uint8_t*)rx1, sizeof(rx1));
   printf("Prog start\r\n");
   /* USER CODE END 2 */
 
@@ -158,6 +156,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+  LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL_DIV_1_5);
 }
 
 /* USER CODE BEGIN 4 */
@@ -200,7 +199,7 @@ void control(uint8_t cmd) {
   }
 }
 void (*uart_rx_callback)(uint8_t) = control;
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+/*void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   if (huart->Instance == USART1) {
     uart_rx_callback(rx1[1]);
@@ -212,7 +211,7 @@ void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart)
   if (huart->Instance == USART1) {
     uart_rx_callback(rx1[0]);
   }
-}
+}*/
 /* USER CODE END 4 */
 
 /**

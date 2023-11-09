@@ -23,12 +23,22 @@ void group_pin_set_hiz(GPIO_TypeDef *GPIOx, uint32_t Pin) {
 
 void z80ramm_init(void) {
     printf("z80ramm_init\r\n");
-    group_pin_set_out(GPIOA, LL_GPIO_PIN_0);
+    //group_pin_set_out(GPIOA, LL_GPIO_PIN_0);
+
+    // BUSRQ pin
+    LL_GPIO_SetPinMode(BUSRQ_GPIO_Port, BUSRQ_Pin, LL_GPIO_MODE_OUTPUT);
+    LL_GPIO_SetPinSpeed(BUSRQ_GPIO_Port, BUSRQ_Pin, LL_GPIO_SPEED_FREQ_HIGH);
+    LL_GPIO_SetPinOutputType(BUSRQ_GPIO_Port, BUSRQ_Pin, LL_GPIO_OUTPUT_OPENDRAIN);
+    LL_GPIO_ResetOutputPin(BUSRQ_GPIO_Port, BUSRQ_Pin);
 }
 
 void z80ramm_deinit(void) {
     printf("z80ramm_deinit\r\n");
-    group_pin_set_hiz(GPIOA, LL_GPIO_PIN_0);
+    //group_pin_set_hiz(GPIOA, LL_GPIO_PIN_0);
+
+    // BUSRQ pin
+    LL_GPIO_SetOutputPin(BUSRQ_GPIO_Port, BUSRQ_Pin);
+    LL_GPIO_SetPinMode(BUSRQ_GPIO_Port, BUSRQ_Pin, LL_GPIO_MODE_FLOATING);
 }
 
 void z80ramm_write(uint16_t adr, uint8_t data) {

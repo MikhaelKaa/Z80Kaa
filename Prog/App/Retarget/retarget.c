@@ -4,14 +4,14 @@
 
 #include "main.h"
 #include "retarget.h"
-
+#include "usbd_cdc_if.h"
 // printf buffer
 #define BUF_SZ  (256)
 uint8_t  buf[BUF_SZ];
 volatile int counter = 0U;
 
 // uart на отладочной плате
-extern UART_HandleTypeDef huart1;
+//extern UART_HandleTypeDef huart1;
 
 // Circular update
 void printf_flush(void)
@@ -19,7 +19,8 @@ void printf_flush(void)
   if(counter)
   {
     int size = counter;
-    if(HAL_BUSY == HAL_UART_Transmit_DMA(&huart1, buf, size)) return;
+    if(0 != CDC_Transmit_FS(buf, size)) return;
+    //if(HAL_BUSY == HAL_UART_Transmit_DMA(&huart1, buf, size)) return;
     counter = 0;
   }
 }
