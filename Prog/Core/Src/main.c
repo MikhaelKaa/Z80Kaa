@@ -47,6 +47,8 @@
 
 /* USER CODE BEGIN PV */
 uint8_t rx1[2];
+uint8_t control_cmd;
+void control(uint8_t cmd);
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -105,8 +107,8 @@ int main(void)
     // for(int n = 0; n<655350; n++) asm("NOP");
     // LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
     for(int n = 0; n<655350; n++) asm("NOP");
-    // printf("test\r\n");
     printf_flush();
+    if(control_cmd != 0) control(control_cmd);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -171,11 +173,15 @@ void case_help(void) {
   \r\n");
 }
 void control(uint8_t cmd) {
-    LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
-    for(int n = 0; n<65535; n++) asm("NOP");
-    LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
-    for(int n = 0; n<65535; n++) asm("NOP");
-    switch (cmd) {
+
+  // LED blink
+  LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
+  for(int n = 0; n<65535; n++) asm("NOP");
+  LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
+  for(int n = 0; n<65535; n++) asm("NOP");
+
+  // control cmd
+  switch (cmd) {
     case 'i': z80ramm_init(); break;
     case 'd': z80ramm_deinit(); break;
     case 'r': z80ramm_read(0); break;
@@ -197,6 +203,7 @@ void control(uint8_t cmd) {
     
     default: printf("Unknown cmd\r\n"); break;
   }
+  control_cmd = 0;
 }
 void (*uart_rx_callback)(uint8_t) = control;
 /*void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)

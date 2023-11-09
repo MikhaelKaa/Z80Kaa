@@ -13,6 +13,5 @@ void z80ramm_deinit(void);
 void z80ramm_write(uint16_t adr, uint8_t data);
 uint8_t z80ramm_read(uint16_t adr);
 
-void control(uint8_t cmd);
 
 #endif /* Z80RAMM */

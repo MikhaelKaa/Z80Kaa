@@ -63,7 +63,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+extern uint8_t control_cmd;
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -105,6 +105,12 @@ void Error_Handler(void);
 #define A15_GPIO_Port GPIOB
 #define BUSRQ_Pin LL_GPIO_PIN_8
 #define BUSRQ_GPIO_Port GPIOA
+#define WR_Pin LL_GPIO_PIN_9
+#define WR_GPIO_Port GPIOA
+#define RD_Pin LL_GPIO_PIN_10
+#define RD_GPIO_Port GPIOA
+#define MREQ_Pin LL_GPIO_PIN_15
+#define MREQ_GPIO_Port GPIOA
 #define A3_Pin LL_GPIO_PIN_3
 #define A3_GPIO_Port GPIOB
 #define A4_Pin LL_GPIO_PIN_4

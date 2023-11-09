@@ -43,9 +43,9 @@ assign cpu_clock = clk_div[1];
 //assign cpu_clock = reg_fe[3]?clk_div[4]:clk_div[3];
 
 // M48Z35Y
-assign E = mreq;
-assign G = rd;
-assign W = wr;
+//assign E = mreq;
+//assign G = rd;
+//assign W = wr;
 
 
 // io

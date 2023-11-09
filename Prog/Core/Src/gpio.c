@@ -63,7 +63,7 @@ void MX_GPIO_Init(void)
   /**/
   GPIO_InitStruct.Pin = D0_Pin|D1_Pin|D2_Pin|D3_Pin
                           |D4_Pin|D5_Pin|D6_Pin|D7_Pin
-                          |BUSRQ_Pin|LL_GPIO_PIN_15;
+                          |BUSRQ_Pin|WR_Pin|RD_Pin|MREQ_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_FLOATING;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
