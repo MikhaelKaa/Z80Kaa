@@ -168,8 +168,9 @@ void case_help(void) {
   h - tsis help message\r\n\
   i - init pins to work, z80 stopped\r\n\
   d - deinit pins to work z80 run\r\n\
-  r - test read\r\n\
-  w - test write\r\n\
+  r - read\r\n\
+  w - write\r\n\
+  t - ram test\r\n\
   \r\n");
 }
 void control(uint8_t cmd) {
@@ -182,10 +183,11 @@ void control(uint8_t cmd) {
 
   // control cmd
   switch (cmd) {
-    case 'i': z80ramm_init(); break;
-    case 'd': z80ramm_deinit(); break;
+    case 'i': z80ramm_suspend_cpu(); break;
+    case 'd': z80ramm_resume_cpu(); break;
     case 'r': z80ramm_read(0); break;
     case 'w': z80ramm_write(0, 255); break;
+    case 't': z80ramm_test(); break;
     /*
     case 'v': dcmi_resume(); break;
     case 'b': dcmi_toogle_HS_polarity(); break;

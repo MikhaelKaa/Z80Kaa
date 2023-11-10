@@ -6,155 +6,115 @@
 #include "z80ramm.h"
 #include "retarget.h"
 
-// BUSRQ на пине GPIOA 8
-// Шина адреса пин к пину на порту GPIOB
-// Шина данных пин к пину на порту GPIOA
-#define DATA_PORT (D0_GPIO_Port)
+static volatile uint8_t z80_is_stopped = 0;
 
-void z80ramm_init(void) {
-    printf("Z80 ram manager init\r\n");
-
-    // BUSRQ pin настраиваем на выход.
+void z80ramm_suspend_cpu(void) {
+    // BUSRQ.
     LL_GPIO_SetPinMode(BUSRQ_GPIO_Port, BUSRQ_Pin, LL_GPIO_MODE_OUTPUT);
     LL_GPIO_SetPinSpeed(BUSRQ_GPIO_Port, BUSRQ_Pin, LL_GPIO_SPEED_FREQ_HIGH);
     LL_GPIO_SetPinOutputType(BUSRQ_GPIO_Port, BUSRQ_Pin, LL_GPIO_OUTPUT_OPENDRAIN);
-    // Выставляем низкий уровнь.
+    LL_GPIO_SetPinPull(BUSRQ_GPIO_Port, BUSRQ_Pin, LL_GPIO_PULL_UP);
+    // Выставляем низкий уровнь BUSRQ.
     LL_GPIO_ResetOutputPin(BUSRQ_GPIO_Port, BUSRQ_Pin);
-
     // Задержка. Вместо ожидания BUSASK.
-    for(int n = 0; n<65535; n++) asm("NOP");
-
+    NOPDELAY(65536);
+    z80_is_stopped = 1;
     // С этого момента шины Z80 в HiZ, можем работать.
-
-    // Адресная шина.
-    LL_GPIO_SetPinMode(GPIOB, LL_GPIO_PIN_ALL, LL_GPIO_MODE_OUTPUT);
-    LL_GPIO_SetPinSpeed(GPIOB, LL_GPIO_PIN_ALL, LL_GPIO_SPEED_FREQ_HIGH);
-    LL_GPIO_SetPinOutputType(GPIOB, LL_GPIO_PIN_ALL, LL_GPIO_OUTPUT_PUSHPULL);
-
-    // Шина данных.
-    LL_GPIO_SetPinMode(DATA_PORT, D0_Pin, LL_GPIO_MODE_OUTPUT);
-    LL_GPIO_SetPinSpeed(DATA_PORT, D0_Pin, LL_GPIO_SPEED_FREQ_HIGH);
-    LL_GPIO_SetPinOutputType(DATA_PORT, D0_Pin, LL_GPIO_OUTPUT_OPENDRAIN);
-    LL_GPIO_SetOutputPin(DATA_PORT, D0_Pin);
-
-    LL_GPIO_SetPinMode(DATA_PORT, D1_Pin, LL_GPIO_MODE_OUTPUT);
-    LL_GPIO_SetPinSpeed(DATA_PORT, D1_Pin, LL_GPIO_SPEED_FREQ_HIGH);
-    LL_GPIO_SetPinOutputType(DATA_PORT, D1_Pin, LL_GPIO_OUTPUT_OPENDRAIN);
-    LL_GPIO_SetOutputPin(DATA_PORT, D1_Pin);
-
-    LL_GPIO_SetPinMode(DATA_PORT, D2_Pin, LL_GPIO_MODE_OUTPUT);
-    LL_GPIO_SetPinSpeed(DATA_PORT, D2_Pin, LL_GPIO_SPEED_FREQ_HIGH);
-    LL_GPIO_SetPinOutputType(DATA_PORT, D2_Pin, LL_GPIO_OUTPUT_OPENDRAIN);
-    LL_GPIO_SetOutputPin(DATA_PORT, D2_Pin);
-
-    LL_GPIO_SetPinMode(DATA_PORT, D3_Pin, LL_GPIO_MODE_OUTPUT);
-    LL_GPIO_SetPinSpeed(DATA_PORT, D3_Pin, LL_GPIO_SPEED_FREQ_HIGH);
-    LL_GPIO_SetPinOutputType(DATA_PORT, D3_Pin, LL_GPIO_OUTPUT_OPENDRAIN);
-    LL_GPIO_SetOutputPin(DATA_PORT, D3_Pin);
-
-    LL_GPIO_SetPinMode(DATA_PORT, D4_Pin, LL_GPIO_MODE_OUTPUT);
-    LL_GPIO_SetPinSpeed(DATA_PORT, D4_Pin, LL_GPIO_SPEED_FREQ_HIGH);
-    LL_GPIO_SetPinOutputType(DATA_PORT, D4_Pin, LL_GPIO_OUTPUT_OPENDRAIN);
-    LL_GPIO_SetOutputPin(DATA_PORT, D4_Pin);
-
-    LL_GPIO_SetPinMode(DATA_PORT, D5_Pin, LL_GPIO_MODE_OUTPUT);
-    LL_GPIO_SetPinSpeed(DATA_PORT, D5_Pin, LL_GPIO_SPEED_FREQ_HIGH);
-    LL_GPIO_SetPinOutputType(DATA_PORT, D5_Pin, LL_GPIO_OUTPUT_OPENDRAIN);
-    LL_GPIO_SetOutputPin(DATA_PORT, D5_Pin);
-
-    LL_GPIO_SetPinMode(DATA_PORT, D6_Pin, LL_GPIO_MODE_OUTPUT);
-    LL_GPIO_SetPinSpeed(DATA_PORT, D6_Pin, LL_GPIO_SPEED_FREQ_HIGH);
-    LL_GPIO_SetPinOutputType(DATA_PORT, D6_Pin, LL_GPIO_OUTPUT_OPENDRAIN);
-    LL_GPIO_SetOutputPin(DATA_PORT, D6_Pin);
-
-    LL_GPIO_SetPinMode(DATA_PORT, D7_Pin, LL_GPIO_MODE_OUTPUT);
-    LL_GPIO_SetPinSpeed(DATA_PORT, D7_Pin, LL_GPIO_SPEED_FREQ_HIGH);
-    LL_GPIO_SetPinOutputType(DATA_PORT, D7_Pin, LL_GPIO_OUTPUT_OPENDRAIN);
-    LL_GPIO_SetOutputPin(DATA_PORT, D7_Pin);
-
-    // WR.
-    LL_GPIO_SetPinMode(WR_GPIO_Port, WR_Pin, LL_GPIO_MODE_OUTPUT);
-    LL_GPIO_SetPinSpeed(WR_GPIO_Port, WR_Pin, LL_GPIO_SPEED_FREQ_HIGH);
-    LL_GPIO_SetPinOutputType(WR_GPIO_Port, WR_Pin, LL_GPIO_OUTPUT_PUSHPULL);
-    LL_GPIO_SetPinPull(WR_GPIO_Port, WR_Pin, LL_GPIO_PULL_UP);
-    LL_GPIO_SetOutputPin(WR_GPIO_Port, WR_Pin);
-
-    // RD.
-    LL_GPIO_SetPinMode(RD_GPIO_Port, RD_Pin, LL_GPIO_MODE_OUTPUT);
-    LL_GPIO_SetPinSpeed(RD_GPIO_Port, RD_Pin, LL_GPIO_SPEED_FREQ_HIGH);
-    LL_GPIO_SetPinOutputType(RD_GPIO_Port, RD_Pin, LL_GPIO_OUTPUT_PUSHPULL);
-    LL_GPIO_SetPinPull(RD_GPIO_Port, RD_Pin, LL_GPIO_PULL_UP);
-    LL_GPIO_SetOutputPin(RD_GPIO_Port, RD_Pin);
-
-    // MREQ.
-    LL_GPIO_SetPinMode(MREQ_GPIO_Port, MREQ_Pin, LL_GPIO_MODE_OUTPUT);
-    LL_GPIO_SetPinSpeed(MREQ_GPIO_Port, MREQ_Pin, LL_GPIO_SPEED_FREQ_HIGH);
-    LL_GPIO_SetPinOutputType(MREQ_GPIO_Port, MREQ_Pin, LL_GPIO_OUTPUT_PUSHPULL);
-    LL_GPIO_SetPinPull(MREQ_GPIO_Port, MREQ_Pin, LL_GPIO_PULL_UP);
-    LL_GPIO_SetOutputPin(MREQ_GPIO_Port, MREQ_Pin);
+    z80ramm_data_pins2output();
+    z80ramm_adr_pins2output();
+    z80ramm_ctrl_pins2output();
+    printf("Z80 stopped, bus in HiZ\r\n");
 }
 
-void z80ramm_deinit(void) {
-    printf("Z80 ram manager deinit\r\n");
-
-    // Адресная шина.
-    LL_GPIO_SetPinMode(GPIOB, LL_GPIO_PIN_ALL, LL_GPIO_MODE_INPUT);
-
-    // Шина данных.
-    LL_GPIO_SetOutputPin(DATA_PORT, D0_Pin);
-    LL_GPIO_SetOutputPin(DATA_PORT, D1_Pin);
-    LL_GPIO_SetOutputPin(DATA_PORT, D2_Pin);
-    LL_GPIO_SetOutputPin(DATA_PORT, D3_Pin);
-    LL_GPIO_SetOutputPin(DATA_PORT, D4_Pin);
-    LL_GPIO_SetOutputPin(DATA_PORT, D5_Pin);
-    LL_GPIO_SetOutputPin(DATA_PORT, D6_Pin);
-    LL_GPIO_SetOutputPin(DATA_PORT, D7_Pin);
-    //LL_GPIO_SetPinMode(DATA_PORT, D0_Pin, LL_GPIO_MODE_INPUT);
-    //LL_GPIO_SetPinMode(DATA_PORT, D1_Pin, LL_GPIO_MODE_INPUT);
-    //LL_GPIO_SetPinMode(DATA_PORT, D2_Pin, LL_GPIO_MODE_INPUT);
-    //LL_GPIO_SetPinMode(DATA_PORT, D3_Pin, LL_GPIO_MODE_INPUT);
-    //LL_GPIO_SetPinMode(DATA_PORT, D4_Pin, LL_GPIO_MODE_INPUT);
-    //LL_GPIO_SetPinMode(DATA_PORT, D5_Pin, LL_GPIO_MODE_INPUT);
-    //LL_GPIO_SetPinMode(DATA_PORT, D6_Pin, LL_GPIO_MODE_INPUT);
-    //LL_GPIO_SetPinMode(DATA_PORT, D7_Pin, LL_GPIO_MODE_INPUT);
-
-    // WR
-    LL_GPIO_SetPinMode(WR_GPIO_Port, WR_Pin, LL_GPIO_MODE_INPUT);
-
-    // RD
-    LL_GPIO_SetPinMode(RD_GPIO_Port, RD_Pin, LL_GPIO_MODE_INPUT);
-
-    // MREQ
-    LL_GPIO_SetPinMode(MREQ_GPIO_Port, MREQ_Pin, LL_GPIO_MODE_INPUT);
-
-    // BUSRQ pin
+void z80ramm_resume_cpu(void) {
+    // Переключаем шины в безопасное для Z80 состояние.
+    z80ramm_data_pins2input();
+    z80ramm_adr_pins2input();
+    z80ramm_ctrl_pins2input();
     // Отпускаем BUSRQ, возвращаем шины для Z80.
     LL_GPIO_SetOutputPin(BUSRQ_GPIO_Port, BUSRQ_Pin);
-    LL_GPIO_SetPinMode(BUSRQ_GPIO_Port, BUSRQ_Pin, LL_GPIO_MODE_FLOATING);
+    // BUSRQ input.
+    LL_GPIO_SetPinMode(BUSRQ_GPIO_Port, BUSRQ_Pin, LL_GPIO_MODE_INPUT);
+    // Задержка. Вместо ожидания BUSASK.
+    NOPDELAY(65536);
+    z80_is_stopped = 0;
+    printf("Z80 resume work\r\n");
 }
 
 void z80ramm_write(uint16_t adr, uint8_t data) {
-    printf("write ram\r\n");
-    printf("Do nothing!!!\r\n");
+    if(!z80_is_stopped) return;
+    // Установим сигнал RD в высокий уровень.
+    LL_GPIO_SetOutputPin(RD_GPIO_Port, RD_Pin);
+    NOPDELAY(10);
+    // Установим адрес на шине.
+    LL_GPIO_WriteOutputPort(ADR_PORT, adr);
+    NOPDELAY(10);
+    // WR в низкий уровень.
+    LL_GPIO_ResetOutputPin(WR_GPIO_Port, WR_Pin);
+    NOPDELAY(10);
+    // Установим сигнал MREQ в низкий уровень.
+    LL_GPIO_ResetOutputPin(MREQ_GPIO_Port, MREQ_Pin);
+    NOPDELAY(10);
+    // Установим данные на шине.
+    GPIOA->ODR = data;
+    NOPDELAY(10);
+    // WR в высокий уровень.
+    LL_GPIO_SetOutputPin(WR_GPIO_Port, WR_Pin);
+    NOPDELAY(10);
+    // Установим сигнал MREQ в высокий уровень.
+    LL_GPIO_SetOutputPin(MREQ_GPIO_Port, MREQ_Pin);
+    // Установим на шине данных 0xff, так безопаснее.
+    GPIOA->ODR = 0xff;
 }
 
+// Чтение данных из BBSRAM по адресу
 uint8_t z80ramm_read(uint16_t adr) {
-    LL_GPIO_SetOutputPin(WR_GPIO_Port, WR_Pin);
-    LL_GPIO_ResetOutputPin(RD_GPIO_Port, RD_Pin);
-    LL_GPIO_ResetOutputPin(MREQ_GPIO_Port, MREQ_Pin);
-    for(int n = 0; n<65535; n++) asm("NOP");
+    if(!z80_is_stopped) return 0;
     uint8_t data = 0;
-    for(uint16_t adr = 0; adr <= 255; adr++) {
-        LL_GPIO_WriteOutputPort(GPIOB, adr);
-        for(int n = 0; n<65535; n++) asm("NOP");
-        data = (uint8_t)(GPIOA->IDR);
-        printf("read ram at adr 0x%04x = 0x%02x\r\n", adr, data);
-        //for(int n = 0; n<65535; n++) asm("NOP");
-        printf_flush();
-        for(int n = 0; n<65535; n++) asm("NOP");
-    }
+    // WR в высокий уровень.
     LL_GPIO_SetOutputPin(WR_GPIO_Port, WR_Pin);
-    LL_GPIO_SetOutputPin(RD_GPIO_Port, RD_Pin);
+    NOPDELAY(10);
+    // Установим адрес на шине.
+    LL_GPIO_WriteOutputPort(ADR_PORT, adr);
+    NOPDELAY(10);
+    // Установим сигнал MREQ в низкий уровень.
+    LL_GPIO_ResetOutputPin(MREQ_GPIO_Port, MREQ_Pin);
+    NOPDELAY(10);
+    // Установим сигнал RD в низкий уровень.
+    LL_GPIO_ResetOutputPin(RD_GPIO_Port, RD_Pin);
+    NOPDELAY(10);
+    // Вычитываем данные с шины данных.
+    data = (uint8_t)(GPIOA->IDR);
+    // Установим сигнал MREQ в высокий уровень.
     LL_GPIO_SetOutputPin(MREQ_GPIO_Port, MREQ_Pin);
-    return 0;
+    return data;
+}
+
+void z80ramm_test(void) {
+    if(!z80_is_stopped) z80ramm_suspend_cpu();
+
+    //uint8_t data = 0;
+    printf("test ram\r\n");
+    for(uint16_t adr = 0; adr <= 32767; adr++) {
+        z80ramm_write(adr, adr);
+        if(z80ramm_read(adr) == adr) {
+            printf("Error at 0x%04x\r\n", adr);
+        } else {
+            printf("OK at 0x%04x\r\n", adr);
+        }
+        if(adr%32 == 0) printf_flush();
+        NOPDELAY(10240);
+        }
+
+
+    /*for(uint16_t adr = 0; adr <= 512; adr++) {
+        data = z80ramm_read(adr);
+        if(adr%16 == 0) {
+            printf("\r\n0x%04x ", adr);
+            printf_flush();
+        }
+        printf("%02x ", data);
+    }
+    printf("\r\n");
+    printf_flush();*/
 }

@@ -22,7 +22,8 @@
             "defines": [
                 "STM32F103xB",
                 "M3",
-                "GCC_ARMCM3"
+                "GCC_ARMCM3",
+                "USE_FULL_LL_DRIVER"
             ],
             "cStandard": "c11",
             "cppStandard": "c++17",

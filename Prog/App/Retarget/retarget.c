@@ -6,7 +6,7 @@
 #include "retarget.h"
 #include "usbd_cdc_if.h"
 // printf buffer
-#define BUF_SZ  (256)
+#define BUF_SZ  (8192U)
 uint8_t  buf[BUF_SZ];
 volatile int counter = 0U;
 
