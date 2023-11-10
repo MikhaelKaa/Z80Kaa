@@ -84,14 +84,14 @@ void z80ramm_adr_pins2input(void) {
 }
 
 void z80ramm_data_pins2input(void) {
-    LL_GPIO_SetPinMode(DATA_PORT, D0_Pin, LL_GPIO_MODE_INPUT);
-    LL_GPIO_SetPinMode(DATA_PORT, D1_Pin, LL_GPIO_MODE_INPUT);
-    LL_GPIO_SetPinMode(DATA_PORT, D2_Pin, LL_GPIO_MODE_INPUT);
-    LL_GPIO_SetPinMode(DATA_PORT, D3_Pin, LL_GPIO_MODE_INPUT);
-    LL_GPIO_SetPinMode(DATA_PORT, D4_Pin, LL_GPIO_MODE_INPUT);
-    LL_GPIO_SetPinMode(DATA_PORT, D5_Pin, LL_GPIO_MODE_INPUT);
-    LL_GPIO_SetPinMode(DATA_PORT, D6_Pin, LL_GPIO_MODE_INPUT);
-    LL_GPIO_SetPinMode(DATA_PORT, D7_Pin, LL_GPIO_MODE_INPUT);
+    LL_GPIO_SetPinMode(DATA_PORT, D0_Pin, LL_GPIO_MODE_FLOATING);
+    LL_GPIO_SetPinMode(DATA_PORT, D1_Pin, LL_GPIO_MODE_FLOATING);
+    LL_GPIO_SetPinMode(DATA_PORT, D2_Pin, LL_GPIO_MODE_FLOATING);
+    LL_GPIO_SetPinMode(DATA_PORT, D3_Pin, LL_GPIO_MODE_FLOATING);
+    LL_GPIO_SetPinMode(DATA_PORT, D4_Pin, LL_GPIO_MODE_FLOATING);
+    LL_GPIO_SetPinMode(DATA_PORT, D5_Pin, LL_GPIO_MODE_FLOATING);
+    LL_GPIO_SetPinMode(DATA_PORT, D6_Pin, LL_GPIO_MODE_FLOATING);
+    LL_GPIO_SetPinMode(DATA_PORT, D7_Pin, LL_GPIO_MODE_FLOATING);
     
     /*LL_GPIO_SetOutputPin(DATA_PORT, D0_Pin);
     LL_GPIO_SetOutputPin(DATA_PORT, D1_Pin);
@@ -147,13 +147,13 @@ void z80ramm_data_pins2output(void) {
 void z80ramm_ctrl_pins2input(void) {
     // WR.
     LL_GPIO_SetOutputPin(WR_GPIO_Port, WR_Pin);
-    LL_GPIO_SetPinMode(WR_GPIO_Port, WR_Pin, LL_GPIO_MODE_INPUT);
+    LL_GPIO_SetPinMode(WR_GPIO_Port, WR_Pin, LL_GPIO_MODE_FLOATING);
     // RD.
     LL_GPIO_SetOutputPin(RD_GPIO_Port, RD_Pin);
-    LL_GPIO_SetPinMode(RD_GPIO_Port, RD_Pin, LL_GPIO_MODE_INPUT);
+    LL_GPIO_SetPinMode(RD_GPIO_Port, RD_Pin, LL_GPIO_MODE_FLOATING);
     // MREQ.
     LL_GPIO_SetOutputPin(MREQ_GPIO_Port, MREQ_Pin);
-    LL_GPIO_SetPinMode(MREQ_GPIO_Port, MREQ_Pin, LL_GPIO_MODE_INPUT);
+    LL_GPIO_SetPinMode(MREQ_GPIO_Port, MREQ_Pin, LL_GPIO_MODE_FLOATING);
 }
 
 void z80ramm_ctrl_pins2output(void) {

@@ -171,6 +171,7 @@ void case_help(void) {
   r - read\r\n\
   w - write\r\n\
   t - ram test\r\n\
+  e - ram erase\r\n\
   \r\n");
 }
 void control(uint8_t cmd) {
@@ -185,9 +186,11 @@ void control(uint8_t cmd) {
   switch (cmd) {
     case 'i': z80ramm_suspend_cpu(); break;
     case 'd': z80ramm_resume_cpu(); break;
-    case 'r': z80ramm_read(0); break;
-    case 'w': z80ramm_write(0, 255); break;
+    case 'r': mem_read_test(); break;
+    case 'w': mem_write_test(); break;
     case 't': z80ramm_test(); break;
+    case 'e': mem_erase_test(); break;
+    
     /*
     case 'v': dcmi_resume(); break;
     case 'b': dcmi_toogle_HS_polarity(); break;

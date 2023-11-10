@@ -31,4 +31,7 @@ void z80ramm_data_pins2output(void);
 void z80ramm_ctrl_pins2input(void);
 void z80ramm_ctrl_pins2output(void);
 
+void mem_read_test(void);
+void mem_write_test(void);
+void mem_erase_test(void);
 #endif /* Z80RAMM */
