@@ -66,6 +66,8 @@
     "doors_pas.h": "c",
     "stm32f7xx.h": "c",
     "stm32f1xx_ll_rcc.h": "c",
-    "stm32f1xx.h": "c"
+    "stm32f1xx.h": "c",
+    "z80ramm.h": "c",
+    "z80ramm_.h": "c"
   },
 }

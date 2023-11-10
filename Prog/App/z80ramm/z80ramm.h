@@ -1,28 +1,36 @@
 // Header: z80 ram manager
 // File Name: z80ramm.h
 // Author: Mikhail Kaa
-// Date: 03.11.2023
+// Date: 11.11.2023
 
 #ifndef Z80RAMM
 #define Z80RAMM
 
 #include "main.h"
 
-// Задержка на NOPах. Привязана к частоте MCU.
-#define NOPDELAY(t) for(int n = 0; n < t; n++) asm("NOP")
+// Флаг, установлен если Z80 находится в режиме предоставления шины внешним устройствам.
+extern volatile uint8_t z80_is_stopped;
 
-// BUSRQ на пине GPIOA 8
-// Шина адреса пин к пину на порту GPIOB
-#define ADR_PORT (GPIOB)
-// Шина данных пин к пину на порту GPIOA
-#define DATA_PORT (GPIOA)
+// Значение объема памяти микросхемы M48Z35Y или аналогичной.
+#define RAM_LEN (32786U)
+
+/* Чтение запись блоками. */
+
+void z80ram_block_read(uint8_t *buf, uint16_t addr, uint16_t len); // TODO: не реализовано.
+void z80ram_block_write(uint8_t *buf, uint16_t addr, uint16_t len); // TODO: не реализовано.
+
+/* Чтение запись по одному байту. */
 
 void z80ramm_write(uint16_t adr, uint8_t data);
 uint8_t z80ramm_read(uint16_t adr);
-void z80ramm_test(void);
 
+/* Управление Z80 */
+
+void z80_reset(void); // TODO: не реализовано.
 void z80ramm_suspend_cpu(void);
 void z80ramm_resume_cpu(void);
+
+/* Управление GPIO */
 
 void z80ramm_adr_pins2input(void);
 void z80ramm_adr_pins2output(void);
@@ -31,7 +39,11 @@ void z80ramm_data_pins2output(void);
 void z80ramm_ctrl_pins2input(void);
 void z80ramm_ctrl_pins2output(void);
 
+/* Функции для отладки. */
+
+void z80ramm_test(void);
 void mem_read_test(void);
 void mem_write_test(void);
 void mem_erase_test(void);
+
 #endif /* Z80RAMM */
