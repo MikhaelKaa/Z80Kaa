@@ -67,8 +67,8 @@ extern uint8_t control_cmd;
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define LED_Pin LL_GPIO_PIN_13
-#define LED_GPIO_Port GPIOC
+#define Z80_RESET_Pin LL_GPIO_PIN_13
+#define Z80_RESET_GPIO_Port GPIOC
 #define D0_Pin LL_GPIO_PIN_0
 #define D0_GPIO_Port GPIOA
 #define D1_Pin LL_GPIO_PIN_1

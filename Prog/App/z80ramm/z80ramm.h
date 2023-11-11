@@ -14,10 +14,12 @@ extern volatile uint8_t z80_is_stopped;
 // Значение объема памяти микросхемы M48Z35Y или аналогичной.
 #define RAM_LEN (32786U)
 
+
+
 /* Чтение запись блоками. */
 
-void z80ram_block_read(uint8_t *buf, uint16_t addr, uint16_t len); // TODO: не реализовано.
-void z80ram_block_write(uint8_t *buf, uint16_t addr, uint16_t len); // TODO: не реализовано.
+void z80ram_block_read(uint8_t *buf, uint16_t addr, uint16_t len); 
+void z80ram_block_write(uint8_t *buf, uint16_t addr, uint16_t len); 
 
 /* Чтение запись по одному байту. */
 
@@ -26,7 +28,7 @@ uint8_t z80ramm_read(uint16_t adr);
 
 /* Управление Z80 */
 
-void z80_reset(void); // TODO: не реализовано.
+void z80_reset(void); 
 void z80ramm_suspend_cpu(void);
 void z80ramm_resume_cpu(void);
 

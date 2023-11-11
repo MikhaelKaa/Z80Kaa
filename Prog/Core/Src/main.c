@@ -162,6 +162,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+uint8_t block_read_buf[512] = {0};
 void case_help(void);
 void case_help(void) {
   printf("\
@@ -172,15 +173,11 @@ void case_help(void) {
   w - write\r\n\
   t - ram test\r\n\
   e - ram erase\r\n\
+  b - block read\r\n\
+  z - z80_reset\r\n\
   \r\n");
 }
 void control(uint8_t cmd) {
-
-  // LED blink
-  LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
-  for(int n = 0; n<65535; n++) asm("NOP");
-  LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
-  for(int n = 0; n<65535; n++) asm("NOP");
 
   // control cmd
   switch (cmd) {
@@ -190,22 +187,10 @@ void control(uint8_t cmd) {
     case 'w': mem_write_test(); break;
     case 't': z80ramm_test(); break;
     case 'e': mem_erase_test(); break;
+    case 'b': z80ram_block_read(block_read_buf, 0, 32U) ; break;
+    case 'z': z80_reset(); break;
     
-    /*
-    case 'v': dcmi_resume(); break;
-    case 'b': dcmi_toogle_HS_polarity(); break;
-    case 'n': dcmi_toogle_VS_polarity(); break;
-    case 'm': dcmi_toogle_PIXCLK_edge(); break;
-    case 'p': print_all_param(); break;
-    case 'q': inc_test_offset(); break;
-    case 'a': dec_test_offset(); break;
-    case '1': load_gmx_scorpion_set(); break;
-    case '2': load_gmx_pentagon_set(); break;
-    case 'w': offset_x++; break;
-    case 's': offset_x--; break;
-    case 'e': offset_y++; break;
-    case 'd': offset_y--; break;*/
-    
+
     default: printf("Unknown cmd\r\n"); break;
   }
   control_cmd = 0;

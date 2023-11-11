@@ -22,7 +22,7 @@
 #include "usbd_storage_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-
+#include "z80ramm.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -63,11 +63,14 @@
   */
 
 #define STORAGE_LUN_NBR                  1
-#define STORAGE_BLK_NBR                  0x8000
+#define STORAGE_BLK_NBR                  0x10000
 #define STORAGE_BLK_SIZ                  0x200
 
 /* USER CODE BEGIN PRIVATE_DEFINES */
-
+#ifdef STORAGE_BLK_NBR
+#undef STORAGE_BLK_NBR
+#define STORAGE_BLK_NBR                  0x40
+#endif
 /* USER CODE END PRIVATE_DEFINES */
 
 /**
@@ -229,10 +232,7 @@ int8_t STORAGE_IsWriteProtected_FS(uint8_t lun)
 int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 6 */
-  LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
-  for(int n = 0; n<65535; n++) asm("NOP");
-  LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
-  for(int n = 0; n<65535; n++) asm("NOP");
+  z80ram_block_read(buf, (blk_addr*STORAGE_BLK_SIZ), STORAGE_BLK_SIZ*blk_len); 
   return (USBD_OK);
   /* USER CODE END 6 */
 }
@@ -245,6 +245,7 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 7 */
+  z80ram_block_write(buf, (blk_addr*STORAGE_BLK_SIZ), STORAGE_BLK_SIZ*blk_len); 
   return (USBD_OK);
   /* USER CODE END 7 */
 }

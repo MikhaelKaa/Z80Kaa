@@ -39,7 +39,15 @@ void z80ramm_resume_cpu(void) {
     // BUSRQ input.
     LL_GPIO_SetPinMode(BUSRQ_GPIO_Port, BUSRQ_Pin, LL_GPIO_MODE_FLOATING);
     // Задержка. Вместо ожидания BUSASK.
-    RAMMDELAY(65536);
+    //RAMMDELAY(65536);
     z80_is_stopped = 0;
-    printf("Z80 resume work\r\n");
+    z80_reset();    // <-------------------------- Костыль, сброс тут. TODO: Подумать как сделать правильно.
+    //printf("Z80 resume work\r\n");
+}
+
+void z80_reset(void) {
+    printf("Z80 reset\r\n");
+    LL_GPIO_SetOutputPin(Z80_RESET_GPIO_Port, Z80_RESET_Pin);
+    RAMMDELAY(1000000);
+    LL_GPIO_ResetOutputPin(Z80_RESET_GPIO_Port, Z80_RESET_Pin);
 }

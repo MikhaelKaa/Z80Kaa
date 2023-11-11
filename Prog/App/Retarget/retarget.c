@@ -4,7 +4,10 @@
 
 #include "main.h"
 #include "retarget.h"
+//#define USB_CDC_ON
+#ifdef USB_CDC_ON
 #include "usbd_cdc_if.h"
+#endif
 // printf buffer
 #define BUF_SZ  (8192U)
 uint8_t  buf[BUF_SZ];
@@ -19,7 +22,9 @@ void printf_flush(void)
   if(counter)
   {
     int size = counter;
+    #ifdef USB_CDC_ON
     if(0 != CDC_Transmit_FS(buf, size)) return;
+    #endif
     //if(HAL_BUSY == HAL_UART_Transmit_DMA(&huart1, buf, size)) return;
     counter = 0;
   }

@@ -60,3 +60,34 @@ uint8_t z80ramm_read(uint16_t adr) {
     LL_GPIO_SetOutputPin(MREQ_GPIO_Port, MREQ_Pin);
     return data;
 }
+
+// Чтение памяти BBSRAM блоками.
+// uint8_t *buf - указатель на буфер в который будут вычитаны байты.
+// uint16_t addr - адрес байта с которого начнется чтение.
+// uint16_t len - количество байт для чтения.
+void z80ram_block_read(uint8_t *buf, uint16_t addr, uint16_t len) {
+    if(0 == buf) return;
+    z80ramm_suspend_cpu();
+    uint16_t i = 0;
+    while(i != len) {
+        buf[i] = z80ramm_read(addr+i);
+        //printf("bl_rd a=0x%04x d=0x%02x\r\n", addr+i, buf[i]);
+        i++;
+    }
+    z80ramm_resume_cpu();
+}
+
+// Запись памяти BBSRAM блоками.
+// uint8_t *buf - указатель на буфер из которого будут записаны байты.
+// uint16_t addr - адрес байта с которого начнется запись.
+// uint16_t len - количество байт для записи.
+void z80ram_block_write(uint8_t *buf, uint16_t addr, uint16_t len) {
+    if(0 == buf) return;
+    z80ramm_suspend_cpu();
+    uint16_t i = 0;
+    while(i != len) {
+        z80ramm_write(addr+i, buf[i]);
+        i++;
+    }
+    z80ramm_resume_cpu();
+} 

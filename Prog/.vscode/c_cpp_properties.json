@@ -17,7 +17,8 @@
                 "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc",
                 "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Core/Inc",
                 "${workspaceFolder}/USB_DEVICE/Target",
-                "${workspaceFolder}/USB_DEVICE/App"
+                "${workspaceFolder}/USB_DEVICE/App",
+                "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc"
             ],
             "defines": [
                 "STM32F103xB",

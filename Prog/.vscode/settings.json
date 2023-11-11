@@ -68,6 +68,7 @@
     "stm32f1xx_ll_rcc.h": "c",
     "stm32f1xx.h": "c",
     "z80ramm.h": "c",
-    "z80ramm_.h": "c"
+    "z80ramm_.h": "c",
+    "stm32f1xx_ll_system.h": "c"
   },
 }

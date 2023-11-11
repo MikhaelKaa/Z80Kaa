@@ -18,6 +18,6 @@
 #define RAMM_DATA_PORT (GPIOA)
 
 // Задержка на NOPах. Привязана к частоте MCU.
-#define RAMMDELAY(t) for(int n = 0; n < t; n++) asm("NOP")
+#define RAMMDELAY(t) for(uint32_t n = 0; n < t; n++) asm("NOP")
 
 #endif /* _Z80RAMM_ */
