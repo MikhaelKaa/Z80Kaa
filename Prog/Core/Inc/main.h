@@ -64,6 +64,7 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 extern uint8_t control_cmd;
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

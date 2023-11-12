@@ -25,7 +25,7 @@ void z80ramm_suspend_cpu(void) {
     z80ramm_adr_pins2output();
     z80ramm_ctrl_pins2output();
     z80_is_stopped = 1;
-    printf("Z80 stopped, bus in HiZ\r\n");
+    printf("z80ramm_suspend_cpu, bus in HiZ\r\n");
 }
 
 // Возвращает Z80 в режим испольнения кода из BBSRAM.
@@ -39,10 +39,9 @@ void z80ramm_resume_cpu(void) {
     // BUSRQ input.
     LL_GPIO_SetPinMode(BUSRQ_GPIO_Port, BUSRQ_Pin, LL_GPIO_MODE_FLOATING);
     // Задержка. Вместо ожидания BUSASK.
-    //RAMMDELAY(65536);
+    RAMMDELAY(65536);
     z80_is_stopped = 0;
-    z80_reset();    // <-------------------------- Костыль, сброс тут. TODO: Подумать как сделать правильно.
-    //printf("Z80 resume work\r\n");
+    printf("z80ramm_resume_cpu\r\n");
 }
 
 void z80_reset(void) {

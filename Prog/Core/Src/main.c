@@ -101,14 +101,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    //HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-    //HAL_Delay(500);
-    // LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
-    // for(int n = 0; n<655350; n++) asm("NOP");
-    // LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
     for(int n = 0; n<655350; n++) asm("NOP");
-    printf_flush();
     if(control_cmd != 0) control(control_cmd);
+    printf_flush();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -195,8 +190,8 @@ void control(uint8_t cmd) {
   }
   control_cmd = 0;
 }
-void (*uart_rx_callback)(uint8_t) = control;
-/*void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+/*void (*uart_rx_callback)(uint8_t) = control;
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   if (huart->Instance == USART1) {
     uart_rx_callback(rx1[1]);

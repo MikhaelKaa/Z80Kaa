@@ -4,7 +4,7 @@
 
 #include "main.h"
 #include "retarget.h"
-//#define USB_CDC_ON
+#define USB_CDC_ON
 #ifdef USB_CDC_ON
 #include "usbd_cdc_if.h"
 #endif
