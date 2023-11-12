@@ -44,6 +44,7 @@ void z80ramm_resume_cpu(void) {
     printf("z80ramm_resume_cpu\r\n");
 }
 
+// Сброс Z80.
 void z80_reset(void) {
     printf("Z80 reset\r\n");
     LL_GPIO_SetOutputPin(Z80_RESET_GPIO_Port, Z80_RESET_Pin);

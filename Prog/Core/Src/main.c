@@ -190,7 +190,8 @@ void control(uint8_t cmd) {
   }
   control_cmd = 0;
 }
-/*void (*uart_rx_callback)(uint8_t) = control;
+/*
+void (*uart_rx_callback)(uint8_t) = control;
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   if (huart->Instance == USART1) {
@@ -203,7 +204,8 @@ void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart)
   if (huart->Instance == USART1) {
     uart_rx_callback(rx1[0]);
   }
-}*/
+}
+*/
 /* USER CODE END 4 */
 
 /**
