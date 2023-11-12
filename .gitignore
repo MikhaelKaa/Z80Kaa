@@ -9,3 +9,6 @@
 /FW/*.bin
 /Prog/build
 /HW/*.log
+/PCProg/obj
+/PCProg/bin
+/PCProg/.vs

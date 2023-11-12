@@ -1,0 +1,255 @@
+ARM GAS  C:\Users\Kaa\AppData\Local\Temp\ccRXMKMv.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"retarget.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.printf_flush,"ax",%progbits
+  16              		.align	1
+  17              		.global	printf_flush
+  18              		.arch armv7-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	printf_flush:
+  25              	.LFB401:
+  26              		.file 1 "App/Retarget/retarget.c"
+   1:App/Retarget/retarget.c **** //01.11.2020
+   2:App/Retarget/retarget.c **** #include <stdio.h>
+   3:App/Retarget/retarget.c **** #include <string.h>
+   4:App/Retarget/retarget.c **** 
+   5:App/Retarget/retarget.c **** #include "main.h"
+   6:App/Retarget/retarget.c **** #include "retarget.h"
+   7:App/Retarget/retarget.c **** #define USB_CDC_ON
+   8:App/Retarget/retarget.c **** #ifdef USB_CDC_ON
+   9:App/Retarget/retarget.c **** #include "usbd_cdc_if.h"
+  10:App/Retarget/retarget.c **** #endif
+  11:App/Retarget/retarget.c **** // printf buffer
+  12:App/Retarget/retarget.c **** #define BUF_SZ  (8192U)
+  13:App/Retarget/retarget.c **** uint8_t  buf[BUF_SZ];
+  14:App/Retarget/retarget.c **** volatile int counter = 0U;
+  15:App/Retarget/retarget.c **** 
+  16:App/Retarget/retarget.c **** // uart на отладочной плате
+  17:App/Retarget/retarget.c **** //extern UART_HandleTypeDef huart1;
+  18:App/Retarget/retarget.c **** 
+  19:App/Retarget/retarget.c **** // Circular update
+  20:App/Retarget/retarget.c **** void printf_flush(void)
+  21:App/Retarget/retarget.c **** {
+  27              		.loc 1 21 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+  22:App/Retarget/retarget.c ****   if(counter)
+  36              		.loc 1 22 3 view .LVU1
+ARM GAS  C:\Users\Kaa\AppData\Local\Temp\ccRXMKMv.s 			page 2
+
+
+  37              		.loc 1 22 6 is_stmt 0 view .LVU2
+  38 0002 084B     		ldr	r3, .L5
+  39 0004 1B68     		ldr	r3, [r3]
+  40              		.loc 1 22 5 view .LVU3
+  41 0006 03B9     		cbnz	r3, .L4
+  42              	.L1:
+  23:App/Retarget/retarget.c ****   {
+  24:App/Retarget/retarget.c ****     int size = counter;
+  25:App/Retarget/retarget.c ****     #ifdef USB_CDC_ON
+  26:App/Retarget/retarget.c ****     if(0 != CDC_Transmit_FS(buf, size)) return;
+  27:App/Retarget/retarget.c ****     #endif
+  28:App/Retarget/retarget.c ****     //if(HAL_BUSY == HAL_UART_Transmit_DMA(&huart1, buf, size)) return;
+  29:App/Retarget/retarget.c ****     counter = 0;
+  30:App/Retarget/retarget.c ****   }
+  31:App/Retarget/retarget.c **** }
+  43              		.loc 1 31 1 view .LVU4
+  44 0008 08BD     		pop	{r3, pc}
+  45              	.L4:
+  46              	.LBB2:
+  24:App/Retarget/retarget.c ****     #ifdef USB_CDC_ON
+  47              		.loc 1 24 5 is_stmt 1 view .LVU5
+  24:App/Retarget/retarget.c ****     #ifdef USB_CDC_ON
+  48              		.loc 1 24 9 is_stmt 0 view .LVU6
+  49 000a 064B     		ldr	r3, .L5
+  50 000c 1968     		ldr	r1, [r3]
+  51              	.LVL0:
+  26:App/Retarget/retarget.c ****     #endif
+  52              		.loc 1 26 5 is_stmt 1 view .LVU7
+  26:App/Retarget/retarget.c ****     #endif
+  53              		.loc 1 26 13 is_stmt 0 view .LVU8
+  54 000e 89B2     		uxth	r1, r1
+  55              	.LVL1:
+  26:App/Retarget/retarget.c ****     #endif
+  56              		.loc 1 26 13 view .LVU9
+  57 0010 0548     		ldr	r0, .L5+4
+  58 0012 FFF7FEFF 		bl	CDC_Transmit_FS
+  59              	.LVL2:
+  26:App/Retarget/retarget.c ****     #endif
+  60              		.loc 1 26 7 view .LVU10
+  61 0016 0028     		cmp	r0, #0
+  62 0018 F6D1     		bne	.L1
+  29:App/Retarget/retarget.c ****   }
+  63              		.loc 1 29 5 is_stmt 1 view .LVU11
+  29:App/Retarget/retarget.c ****   }
+  64              		.loc 1 29 13 is_stmt 0 view .LVU12
+  65 001a 024B     		ldr	r3, .L5
+  66 001c 0022     		movs	r2, #0
+  67 001e 1A60     		str	r2, [r3]
+  68 0020 F2E7     		b	.L1
+  69              	.L6:
+  70 0022 00BF     		.align	2
+  71              	.L5:
+  72 0024 00000000 		.word	.LANCHOR0
+  73 0028 00000000 		.word	buf
+  74              	.LBE2:
+  75              		.cfi_endproc
+  76              	.LFE401:
+ARM GAS  C:\Users\Kaa\AppData\Local\Temp\ccRXMKMv.s 			page 3
+
+
+  78              		.section	.text._write,"ax",%progbits
+  79              		.align	1
+  80              		.global	_write
+  81              		.syntax unified
+  82              		.thumb
+  83              		.thumb_func
+  84              		.fpu softvfp
+  86              	_write:
+  87              	.LVL3:
+  88              	.LFB402:
+  32:App/Retarget/retarget.c **** 
+  33:App/Retarget/retarget.c **** int _write(int fd, char* ptr, int len)
+  34:App/Retarget/retarget.c **** {
+  89              		.loc 1 34 1 is_stmt 1 view -0
+  90              		.cfi_startproc
+  91              		@ args = 0, pretend = 0, frame = 0
+  92              		@ frame_needed = 0, uses_anonymous_args = 0
+  93              		@ link register save eliminated.
+  94              		.loc 1 34 1 is_stmt 0 view .LVU14
+  95 0000 F0B4     		push	{r4, r5, r6, r7}
+  96              	.LCFI1:
+  97              		.cfi_def_cfa_offset 16
+  98              		.cfi_offset 4, -16
+  99              		.cfi_offset 5, -12
+ 100              		.cfi_offset 6, -8
+ 101              		.cfi_offset 7, -4
+  35:App/Retarget/retarget.c ****   (void)fd;
+ 102              		.loc 1 35 3 is_stmt 1 view .LVU15
+  36:App/Retarget/retarget.c ****   int i = 0;
+ 103              		.loc 1 36 3 view .LVU16
+ 104              	.LVL4:
+  37:App/Retarget/retarget.c ****   while (ptr[i] && (i < len)) {
+ 105              		.loc 1 37 3 view .LVU17
+  36:App/Retarget/retarget.c ****   int i = 0;
+ 106              		.loc 1 36 7 is_stmt 0 view .LVU18
+ 107 0002 0023     		movs	r3, #0
+ 108              	.LVL5:
+ 109              	.L8:
+ 110              		.loc 1 37 13 view .LVU19
+ 111 0004 CE18     		adds	r6, r1, r3
+ 112 0006 CC5C     		ldrb	r4, [r1, r3]	@ zero_extendqisi2
+ 113              		.loc 1 37 9 view .LVU20
+ 114 0008 64B1     		cbz	r4, .L9
+ 115              		.loc 1 37 17 discriminator 1 view .LVU21
+ 116 000a 9342     		cmp	r3, r2
+ 117 000c 0ADA     		bge	.L9
+  38:App/Retarget/retarget.c ****     buf[counter++%BUF_SZ] = (uint8_t)ptr[i++];
+ 118              		.loc 1 38 5 is_stmt 1 view .LVU22
+ 119              		.loc 1 38 43 is_stmt 0 view .LVU23
+ 120 000e 0133     		adds	r3, r3, #1
+ 121              	.LVL6:
+ 122              		.loc 1 38 16 view .LVU24
+ 123 0010 064D     		ldr	r5, .L12
+ 124 0012 2C68     		ldr	r4, [r5]
+ 125 0014 671C     		adds	r7, r4, #1
+ 126 0016 2F60     		str	r7, [r5]
+ 127              		.loc 1 38 18 view .LVU25
+ARM GAS  C:\Users\Kaa\AppData\Local\Temp\ccRXMKMv.s 			page 4
+
+
+ 128 0018 C4F30C04 		ubfx	r4, r4, #0, #13
+ 129              		.loc 1 38 29 view .LVU26
+ 130 001c 3678     		ldrb	r6, [r6]	@ zero_extendqisi2
+ 131              		.loc 1 38 27 view .LVU27
+ 132 001e 044D     		ldr	r5, .L12+4
+ 133 0020 2E55     		strb	r6, [r5, r4]
+ 134 0022 EFE7     		b	.L8
+ 135              	.L9:
+  39:App/Retarget/retarget.c ****   }
+  40:App/Retarget/retarget.c ****   return len;
+ 136              		.loc 1 40 3 is_stmt 1 view .LVU28
+  41:App/Retarget/retarget.c **** }
+ 137              		.loc 1 41 1 is_stmt 0 view .LVU29
+ 138 0024 1046     		mov	r0, r2
+ 139              	.LVL7:
+ 140              		.loc 1 41 1 view .LVU30
+ 141 0026 F0BC     		pop	{r4, r5, r6, r7}
+ 142              	.LCFI2:
+ 143              		.cfi_restore 7
+ 144              		.cfi_restore 6
+ 145              		.cfi_restore 5
+ 146              		.cfi_restore 4
+ 147              		.cfi_def_cfa_offset 0
+ 148 0028 7047     		bx	lr
+ 149              	.L13:
+ 150 002a 00BF     		.align	2
+ 151              	.L12:
+ 152 002c 00000000 		.word	.LANCHOR0
+ 153 0030 00000000 		.word	buf
+ 154              		.cfi_endproc
+ 155              	.LFE402:
+ 157              		.global	counter
+ 158              		.comm	buf,8192,4
+ 159              		.section	.bss.counter,"aw",%nobits
+ 160              		.align	2
+ 161              		.set	.LANCHOR0,. + 0
+ 164              	counter:
+ 165 0000 00000000 		.space	4
+ 166              		.text
+ 167              	.Letext0:
+ 168              		.file 2 "c:\\arm_tool\\gcc\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 169              		.file 3 "c:\\arm_tool\\gcc\\arm-none-eabi\\include\\sys\\lock.h"
+ 170              		.file 4 "c:\\arm_tool\\gcc\\arm-none-eabi\\include\\sys\\_types.h"
+ 171              		.file 5 "c:\\arm_tool\\gcc\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h"
+ 172              		.file 6 "c:\\arm_tool\\gcc\\arm-none-eabi\\include\\sys\\reent.h"
+ 173              		.file 7 "c:\\arm_tool\\gcc\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 174              		.file 8 "Drivers/CMSIS/Include/core_cm3.h"
+ 175              		.file 9 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h"
+ 176              		.file 10 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ 177              		.file 11 "Core/Inc/main.h"
+ 178              		.file 12 "c:\\arm_tool\\gcc\\arm-none-eabi\\include\\stdlib.h"
+ 179              		.file 13 "Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h"
+ 180              		.file 14 "Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h"
+ 181              		.file 15 "USB_DEVICE/App/usbd_cdc_if.h"
+ 182              		.file 16 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h"
+ARM GAS  C:\Users\Kaa\AppData\Local\Temp\ccRXMKMv.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 retarget.c
+C:\Users\Kaa\AppData\Local\Temp\ccRXMKMv.s:16     .text.printf_flush:0000000000000000 $t
+C:\Users\Kaa\AppData\Local\Temp\ccRXMKMv.s:24     .text.printf_flush:0000000000000000 printf_flush
+C:\Users\Kaa\AppData\Local\Temp\ccRXMKMv.s:72     .text.printf_flush:0000000000000024 $d
+                            *COM*:0000000000002000 buf
+C:\Users\Kaa\AppData\Local\Temp\ccRXMKMv.s:79     .text._write:0000000000000000 $t
+C:\Users\Kaa\AppData\Local\Temp\ccRXMKMv.s:86     .text._write:0000000000000000 _write
+C:\Users\Kaa\AppData\Local\Temp\ccRXMKMv.s:152    .text._write:000000000000002c $d
+C:\Users\Kaa\AppData\Local\Temp\ccRXMKMv.s:164    .bss.counter:0000000000000000 counter
+C:\Users\Kaa\AppData\Local\Temp\ccRXMKMv.s:160    .bss.counter:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+CDC_Transmit_FS
