@@ -106,25 +106,27 @@ LCD1602
     call LCD1602_DATA
     ld a, '0'
     call LCD1602_DATA
-    ld a, 'R'
+    ld a, ' '
     call LCD1602_DATA
-    ld a, 'u'
+    ld a, 'i'
     call LCD1602_DATA
-    ld a, 'l'
+    ld a, 's'
     call LCD1602_DATA
-    ld a, 'e'
+    ld a, ' '
     call LCD1602_DATA
-    ld a, 'z'
+    ld a, 'g'
     call LCD1602_DATA
-    ld a, '_'
+    ld a, 'o'
     call LCD1602_DATA
-    ld a, 'z'
+    ld a, 'o'
+    call LCD1602_DATA
+    ld a, 'd'
     call LCD1602_DATA
     ld a, '!'
     call LCD1602_DATA
     ld a, ' '
     call LCD1602_DATA
-    
+
     pop bc
     pop af
     ret

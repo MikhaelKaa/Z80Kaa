@@ -34,8 +34,8 @@ class ProgPC
         {
             Console.WriteLine("Имя файла с данными для записи по умолчанию test.bin");
             file_name = "test.bin";
-            Console.WriteLine("Имя порта по умолчанию COM14");
-            port_name = "COM14";
+            Console.WriteLine("Имя порта по умолчанию COM9");
+            port_name = "COM9";
         }
 
         FileStream stream = new FileStream(file_name, FileMode.Open, FileAccess.Read);
@@ -105,6 +105,7 @@ class ProgPC
 
             Console.WriteLine("send cmd cpu resume");
             SendCmd((int)Prog_cmd.cpu_resume);
+            Thread.Sleep(3);
             Console.WriteLine("send cmd cpu reset");
             SendCmd((int)Prog_cmd.reset);
 

@@ -27,6 +27,8 @@
 #include "retarget.h"
 #include "z80_ram.h"
 #include "z80_ram_rw.h"
+#include "prog.h"
+#include "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -95,6 +97,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_Delay(10);
   //HAL_UART_Receive_DMA(&huart1, (uint8_t*)rx1, sizeof(rx1));
+  prog_out = CDC_Transmit_FS;
   printf("Prog start\r\n");
   /* USER CODE END 2 */
 

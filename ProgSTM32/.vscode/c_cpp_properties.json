@@ -19,7 +19,8 @@
                 "${workspaceFolder}/USB_DEVICE/Target",
                 "${workspaceFolder}/USB_DEVICE/App",
                 "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc",
-                "${workspaceFolder}/App/z80ramm/inc"
+                "${workspaceFolder}/App/z80ramm/inc",
+                "${workspaceFolder}/App/Prog"
             ],
             "defines": [
                 "STM32F103xB",
