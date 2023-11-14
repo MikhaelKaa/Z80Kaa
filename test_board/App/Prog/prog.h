@@ -8,7 +8,7 @@
 
 #include "main.h"
 
-extern uint8_t (*prog_out)(uint8_t*, uint16_t);
+extern uint8_t (*prog_out)(uint8_t* Buf, uint16_t Len);
 
 void prog_in(uint8_t* Buf, uint16_t Len);
 
