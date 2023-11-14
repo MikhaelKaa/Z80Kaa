@@ -72,4 +72,5 @@
     "usbd_storage_if.h": "c",
     "usbd_msc.h": "c"
   },
+  "cortex-debug.variableUseNaturalFormat": false,
 }
