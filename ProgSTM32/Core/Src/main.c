@@ -25,7 +25,8 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include "retarget.h"
-#include "z80ramm.h"
+#include "z80_ram.h"
+#include "z80_ram_rw.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -169,21 +170,21 @@ void case_help(void) {
   t - ram test\r\n\
   e - ram erase\r\n\
   b - block read\r\n\
-  z - z80_reset\r\n\
+  z - z80_cpu_reset\r\n\
   \r\n");
 }
 void control(uint8_t cmd) {
 
   // control cmd
   switch (cmd) {
-    case 'i': z80ramm_suspend_cpu(); break;
-    case 'd': z80ramm_resume_cpu(); break;
-    case 'r': mem_read_test(); break;
-    case 'w': mem_write_test(); break;
-    case 't': z80ramm_test(); break;
-    case 'e': mem_erase_test(); break;
-    case 'b': z80ram_block_read(block_read_buf, 0, 32U) ; break;
-    case 'z': z80_reset(); break;
+    case 'i': z80_cpu_suspend(); break;
+    case 'd': z80_cpu_resume(); break;
+    case 'r': z80_ram_read_test(); break;
+    case 'w': z80_ram_write_test(); break;
+    case 't': z80_ram_test(); break;
+    case 'e': z80_ram_erase_all(); break;
+    case 'b': z80_ram_read_block(block_read_buf, 0, 32U) ; break;
+    case 'z': z80_cpu_reset(); break;
     
 
     default: printf("Unknown cmd\r\n"); break;
