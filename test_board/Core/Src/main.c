@@ -26,7 +26,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "retarget.h"
+#include "prog.h"
+#include "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -94,13 +96,16 @@ int main(void)
   MX_ETH_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
-
+  prog_out = CDC_Transmit_FS;
+  printf("debug board start!\r\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    HAL_Delay(10);
+    printf_flush();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

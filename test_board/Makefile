@@ -77,6 +77,7 @@ Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
 
 C_SOURCES 	+= $(wildcard App/Retarget/*.c)
 C_SOURCES 	+= $(wildcard App/Prog/*.c)
+C_SOURCES 	+= $(wildcard App/z80_ram/*.c)
 
 # ASM sources
 ASM_SOURCES =  \
@@ -145,6 +146,7 @@ C_INCLUDES =  \
 
 C_INCLUDES += -IApp/Retarget/inc
 C_INCLUDES += -IApp/Prog
+C_INCLUDES += -IApp/z80_ram
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections

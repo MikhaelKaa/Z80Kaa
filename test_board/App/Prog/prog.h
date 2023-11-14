@@ -7,6 +7,7 @@
 #define PROG
 
 #include "main.h"
+#include "z80_ram.h"
 
 extern uint8_t (*prog_out)(uint8_t* Buf, uint16_t Len);
 

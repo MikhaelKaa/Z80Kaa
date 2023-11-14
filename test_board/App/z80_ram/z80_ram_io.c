@@ -1,18 +1,40 @@
 // Header: z80 ram manager
-// File Name: z80ramm.c
+// File Name: z80_ram_io.c
 // Author: Mikhail Kaa
 // Date: 03.11.2023
 
 #include <stdio.h>
-#include "z80ramm_.h"
+#include "z80_ram_rw.h"
+#include "z80_bus_io.h"
 #include "retarget.h"
 
-// Запись байта в BBSRAM. Проверяет флаг z80_is_stopped, если он не установлен - ничего не делает.
-// uint16_t adr - адрес
-// uint8_t data - данные
-void z80ramm_write(uint16_t adr, uint8_t data) {
-    if(!z80_is_stopped) return;
+#if(Z80_DEBUG_ENV == 1)
+uint8_t debug_buf [32768] = {0};
+#endif
 
+
+int z80_ram_read_block(uint8_t *buf, uint16_t addr, uint16_t len) {
+    if(((addr+len) > (RAM_LEN)) | (0 == buf) | (0 == z80_is_stopped)) return -1;
+    uint16_t i = 0;
+    while(i != len) {
+        buf[i] = z80_ram_read(addr+i);
+        i++;
+    }
+    return 0;
+}
+
+int z80_ram_write_block(uint8_t *buf, uint16_t addr, uint16_t len) {
+    if(((addr+len) > (RAM_LEN)) | (0 == buf) | (0 == z80_is_stopped)) return -1;
+    uint16_t i = 0;
+    while(i != len) {
+        z80_ram_write(addr+i, buf[i]);
+        i++;
+    }
+    return 0;
+} 
+
+void z80_ram_write(uint16_t adr, uint8_t data) {
+    #if(Z80_DEBUG_ENV != 1)
     // Установим сигнал RD в высокий уровень.
     LL_GPIO_SetOutputPin(RD_GPIO_Port, RD_Pin);
     RAMMDELAY(10); // TODO: Возможно задерки можно уменшить, а некоторые вообще убрать.
@@ -33,15 +55,15 @@ void z80ramm_write(uint16_t adr, uint8_t data) {
     RAMMDELAY(10);
     // Установим сигнал MREQ в высокий уровень.
     LL_GPIO_SetOutputPin(MREQ_GPIO_Port, MREQ_Pin);
+    #else
+    debug_buf[adr] = data;
+    //printf("DBG_ENV: z80_ram_write adr=%04x, data=%02x\r\n", adr, data);
+    #endif
 }
 
-// Чтение данных из BBSRAM по адресу. Проверяет флаг z80_is_stopped, если он не установлен - возвращает ноль.
-// uint16_t adr - адрес
-// возвращаемое значение - данные по адресу.
-uint8_t z80ramm_read(uint16_t adr) {
-    if(!z80_is_stopped) return 0;
+uint8_t z80_ram_read(uint16_t adr) {
     uint8_t data = 0;
-
+    #if(Z80_DEBUG_ENV != 1)
     // WR в высокий уровень.
     LL_GPIO_SetOutputPin(WR_GPIO_Port, WR_Pin);
     RAMMDELAY(10);
@@ -58,5 +80,9 @@ uint8_t z80ramm_read(uint16_t adr) {
     data = (uint8_t)(GPIOA->IDR);
     // Установим сигнал MREQ в высокий уровень.
     LL_GPIO_SetOutputPin(MREQ_GPIO_Port, MREQ_Pin);
+    #else
+    data = debug_buf[adr];
+    //printf("DBG_ENV: z80_ram_read adr=%04x, data=%02x\r\n", adr, data);
+    #endif
     return data;
 }
