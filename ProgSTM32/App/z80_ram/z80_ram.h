@@ -32,6 +32,14 @@ void z80_cpu_resume(void);
 /// @brief Сброс Z80.
 void z80_cpu_reset(void); 
 
+/// @brief 
+/// @param  
+void z80_cpu_reset_low(void); 
+
+/// @brief 
+/// @param  
+void z80_cpu_reset_high(void); 
+
 /* Операции с памятью */
 
 /// @brief Чтение памяти BBSRAM блоками.

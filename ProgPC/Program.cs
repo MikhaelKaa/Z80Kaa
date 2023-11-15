@@ -8,13 +8,16 @@ class ProgPC
     internal enum Prog_cmd : int
     {
         version = 0,
+        answer,
         read,
         write,
+        erase_all,
         cpu_suspend,
         cpu_resume,
         reset,
-        erase_all,
-        dbg_print
+        reset_low,
+        reset_high,
+        dbg_print,
     };
 
     static byte[] temrorary_buf = new byte[64];
@@ -89,10 +92,10 @@ class ProgPC
                     temrorary_buf[j] = file_bytes[i*64 + j];
                 }
                 SendData(temrorary_buf);
-                Thread.Sleep(1);
+                Thread.Sleep(10);
                 Console.WriteLine("send cmd write adr {0}" , i * 64);
                 SendCmd((int)Prog_cmd.write, i * 64);
-                Thread.Sleep(1);
+                Thread.Sleep(20);
             }
 
             //Console.WriteLine("send cmd read");
@@ -120,6 +123,7 @@ class ProgPC
     //  Отправка команды управления
     static int SendCmd(int cmd, int adr = 0)
     {
+        string answer_str = port.ReadExisting();
         byte[] data = new byte[8];
         data[0] = 0x55; // header
         data[1] = (byte)cmd;
@@ -132,12 +136,18 @@ class ProgPC
 
 
         port.Write(data, 0, 8);
-        //  Отправляем запрос, ждем 100 мс и смотрим что пришло в ответ
-        Thread.Sleep(10);
+        //  Отправляем запрос, ждем 20 мс и смотрим что пришло в ответ
+        Thread.Sleep(20);
 
-        if (port.BytesToRead > 0)
+        int bytes_cnt = port.BytesToRead;
+        //Console.WriteLine(bytes_cnt.ToString());
+        if (bytes_cnt > 0)
         {
             byte[] answer = new byte[(int)port.BytesToRead];
+            answer_str = port.ReadExisting();
+            string text = System.Text.Encoding.UTF8.GetString(answer, 2, 4);
+            //if(bytes_cnt == 8) Console.WriteLine(answer_str);
+            //Console.WriteLine(port.BytesToRead);
             /*switch (cmd)
             {
                 case 0 :

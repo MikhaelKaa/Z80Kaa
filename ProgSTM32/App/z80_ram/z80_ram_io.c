@@ -35,26 +35,28 @@ int z80_ram_write_block(uint8_t *buf, uint16_t addr, uint16_t len) {
 
 void z80_ram_write(uint16_t adr, uint8_t data) {
     #if(Z80_DEBUG_ENV != 1)
+    RAMMDELAY(10);
     // Установим сигнал RD в высокий уровень.
     LL_GPIO_SetOutputPin(RD_GPIO_Port, RD_Pin);
-    RAMMDELAY(10); // TODO: Возможно задерки можно уменшить, а некоторые вообще убрать.
+    RAMMDELAY(20); // TODO: Возможно задерки можно уменшить, а некоторые вообще убрать.
     // Установим адрес на шине.
     LL_GPIO_WriteOutputPort(RAMM_ADR_PORT, adr);
-    RAMMDELAY(10);
+    RAMMDELAY(20);
     // Установим сигнал MREQ в низкий уровень.
     LL_GPIO_ResetOutputPin(MREQ_GPIO_Port, MREQ_Pin);
-    RAMMDELAY(10);
+    RAMMDELAY(20);
     // WR в низкий уровень.
     LL_GPIO_ResetOutputPin(WR_GPIO_Port, WR_Pin);
-    RAMMDELAY(10);
+    RAMMDELAY(20);
     // Установим данные на шине.
     GPIOA->ODR = data;
-    RAMMDELAY(100);
+    RAMMDELAY(150);
     // WR в высокий уровень.
     LL_GPIO_SetOutputPin(WR_GPIO_Port, WR_Pin);
     RAMMDELAY(10);
     // Установим сигнал MREQ в высокий уровень.
     LL_GPIO_SetOutputPin(MREQ_GPIO_Port, MREQ_Pin);
+    RAMMDELAY(10);
     #else
     debug_buf[adr] = data;
     //printf("DBG_ENV: z80_ram_write adr=%04x, data=%02x\r\n", adr, data);

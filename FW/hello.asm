@@ -114,13 +114,13 @@ LCD1602
     call LCD1602_DATA
     ld a, ' '
     call LCD1602_DATA
-    ld a, 'g'
+    ld a, 'f'
     call LCD1602_DATA
-    ld a, 'o'
+    ld a, 'a'
     call LCD1602_DATA
-    ld a, 'o'
+    ld a, 'c'
     call LCD1602_DATA
-    ld a, 'd'
+    ld a, 'k'
     call LCD1602_DATA
     ld a, '!'
     call LCD1602_DATA

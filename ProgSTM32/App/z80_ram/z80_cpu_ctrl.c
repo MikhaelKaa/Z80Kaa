@@ -64,3 +64,12 @@ void z80_cpu_reset(void) {
     printf("DBG_ENV: z80_cpu_reset\r\n");
     #endif
 }
+
+void z80_cpu_reset_low(void) {
+    LL_GPIO_SetOutputPin(Z80_RESET_GPIO_Port, Z80_RESET_Pin);
+}
+
+
+void z80_cpu_reset_high(void) {
+    LL_GPIO_ResetOutputPin(Z80_RESET_GPIO_Port, Z80_RESET_Pin);
+}

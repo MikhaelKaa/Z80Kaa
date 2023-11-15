@@ -107,7 +107,7 @@ int main(void)
   {
     for(int n = 0; n<655350; n++) asm("NOP");
     if(control_cmd != 0) control(control_cmd);
-    printf_flush();
+    //printf_flush();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
