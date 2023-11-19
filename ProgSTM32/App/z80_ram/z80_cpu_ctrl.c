@@ -65,6 +65,25 @@ void z80_cpu_reset(void) {
     #endif
 }
 
+void z80_cpu_start(void) {
+    #if(Z80_DEBUG_ENV != 1)
+    // Переключаем шины в безопасное для Z80 состояние.
+    z80_bus_data_p2f();
+    z80_bus_adr_p2f();
+    z80_bus_ctrl_p2f();
+    // Отпускаем BUSRQ, возвращаем шины для Z80.
+    LL_GPIO_SetOutputPin(BUSRQ_GPIO_Port, BUSRQ_Pin);
+    // BUSRQ input.
+    LL_GPIO_SetPinMode(BUSRQ_GPIO_Port, BUSRQ_Pin, LL_GPIO_MODE_FLOATING);
+    printf("z80_cpu_start\r\n");
+    z80_is_stopped = 0;
+    z80_cpu_reset();
+    #else
+    z80_is_stopped = 0;
+    printf("DBG_ENV: z80_cpu_start\r\n");
+    #endif
+}
+
 void z80_cpu_reset_low(void) {
     LL_GPIO_SetOutputPin(Z80_RESET_GPIO_Port, Z80_RESET_Pin);
 }

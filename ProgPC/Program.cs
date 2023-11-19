@@ -14,7 +14,8 @@ class ProgPC
         erase_all,
         cpu_suspend,
         cpu_resume,
-        reset,
+        cpu_reset,
+        cpu_start,
         reset_low,
         reset_high,
         dbg_print,
@@ -36,7 +37,7 @@ class ProgPC
         } else
         {
             Console.WriteLine("Имя файла с данными для записи по умолчанию test.bin");
-            file_name = "test.bin";
+            file_name = "C:\\Users\\Kaa\\Documents\\Speccy\\Z80Kaa\\FW\\test.bin";
             Console.WriteLine("Имя порта по умолчанию COM9");
             port_name = "COM9";
         }
@@ -95,7 +96,7 @@ class ProgPC
                 Thread.Sleep(10);
                 Console.WriteLine("send cmd write adr {0}" , i * 64);
                 SendCmd((int)Prog_cmd.write, i * 64);
-                Thread.Sleep(20);
+                Thread.Sleep(10);
             }
 
             //Console.WriteLine("send cmd read");
@@ -106,11 +107,11 @@ class ProgPC
             //SendCmd((int)Prog_cmd.dbg_print, 0x7fc0);
             //Thread.Sleep(100);
 
-            Console.WriteLine("send cmd cpu resume");
-            SendCmd((int)Prog_cmd.cpu_resume);
-            Thread.Sleep(3);
+            //Console.WriteLine("send cmd cpu resume");
+            //SendCmd((int)Prog_cmd.cpu_resume);
+            //Thread.Sleep(3);
             Console.WriteLine("send cmd cpu reset");
-            SendCmd((int)Prog_cmd.reset);
+            SendCmd((int)Prog_cmd.cpu_start);
 
             Thread.Sleep(3000);
             port.Close();

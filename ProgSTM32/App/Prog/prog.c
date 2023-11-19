@@ -24,7 +24,8 @@ enum commands {
     erase_all,
     cpu_suspend,
     cpu_resume,
-    reset,
+    cpu_reset,
+    cpu_start,
     reset_low,
     reset_high,
     dbg_print,
@@ -94,8 +95,13 @@ void prog_in(uint8_t* Buf, uint16_t Len) {
             if(prog_out) prog_out((uint8_t*)&answer_ok, sizeof(answer_ok));
             break;
 
-        case reset:
+        case cpu_reset:
             z80_cpu_reset();
+            if(prog_out) prog_out((uint8_t*)&answer_ok, sizeof(answer_ok));
+            break;
+
+        case cpu_start:
+            z80_cpu_start();
             if(prog_out) prog_out((uint8_t*)&answer_ok, sizeof(answer_ok));
             break;
 

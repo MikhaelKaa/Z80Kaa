@@ -32,6 +32,9 @@ void z80_cpu_resume(void);
 /// @brief Сброс Z80.
 void z80_cpu_reset(void); 
 
+/// @brief Старт Z80 после записи нового бинарника в BBSRAM.
+void z80_cpu_start(void);
+
 /// @brief 
 /// @param  
 void z80_cpu_reset_low(void); 

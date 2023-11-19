@@ -14,10 +14,9 @@ input mreq,
 input m1,
 input rst,
 
-// RAM+ROM
-output E,
-output G,
-output W,
+// enable
+input busrq,
+
 
 // led
 output led,
@@ -65,9 +64,9 @@ always @(negedge IOWR or negedge rst) begin
 	end
 end
 
-assign led = reg_fe[0];
-assign lcd_e = ~(IOWR | ~(port_fd)); //fd
-assign lcd_rw = reg_fe[1];
-assign lcd_rs = reg_fe[2];
-assign KBD =  (IORD | ~(port_fe))?(1'bz):(1'b0); //fe
+assign led =    busrq?(reg_fe[0]):(1'b1);
+assign lcd_e =  busrq?(~(IOWR | ~(port_fd))):(1'b1);  //fd
+assign lcd_rw = busrq?(reg_fe[1]):(1'b1);
+assign lcd_rs = busrq?(reg_fe[2]):(1'b1);
+assign KBD =    busrq?((IORD | ~(port_fe))?(1'bz):(1'b0)):(1'bz); //fe
 endmodule

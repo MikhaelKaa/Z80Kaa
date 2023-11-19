@@ -51,9 +51,6 @@ set_global_assignment -name MAX7000_DEVICE_IO_STANDARD "3.3-V LVTTL"
 set_location_assignment PIN_6 -to cpu_clock
 set_global_assignment -name CDF_FILE output_files/Chain0.cdf
 set_location_assignment PIN_43 -to in_clock
-set_location_assignment PIN_11 -to E
-set_location_assignment PIN_9 -to G
-set_location_assignment PIN_8 -to W
 set_location_assignment PIN_14 -to data[0]
 set_location_assignment PIN_29 -to data[1]
 set_location_assignment PIN_18 -to data[2]
@@ -77,3 +74,4 @@ set_location_assignment PIN_40 -to lcd_rs
 set_location_assignment PIN_41 -to lcd_rw
 set_location_assignment PIN_31 -to led
 set_location_assignment PIN_37 -to KBD
+set_location_assignment PIN_33 -to busrq
