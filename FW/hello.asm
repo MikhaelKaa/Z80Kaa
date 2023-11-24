@@ -108,7 +108,7 @@ prloop
     inc hl
     jr prloop
 
-Text db "Jeckas rulez!!!  ", 0
+Text db "Z80Kaa board", 0
 
 
 LCD1602_CMD
