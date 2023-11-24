@@ -42,7 +42,7 @@
     {
       "label": "STLink Write MCU Default",
       "type": "shell",
-      "command": "ST-LINK_CLI.exe -P \"${workspaceRoot}/build/usbkb.bin\" 0x08000000 -rst -Run",
+      "command": "PCProg.exe COM9 test.bin",
       "options": {
         "cwd": "${workspaceRoot}",
         "shell": {

@@ -57,7 +57,7 @@ loop:
     jp (skip)
 
 up
-    call print  ;LCD1602
+    call print1602  ;LCD1602
     jp (skip)
 
 down
@@ -79,7 +79,7 @@ skip
 
     jr loop 
 
-; Процедура вывода на экран LCD1602
+; Процедура инициализвции LCD1602
 LCD1602_init
     push af
     push bc
@@ -97,55 +97,18 @@ LCD1602_init
     pop af
     ret
 
-LCD1602
-    push af
-    push bc
-    ld a, 'Z'
-    call LCD1602_DATA
-    ld a, '8'
-    call LCD1602_DATA
-    ld a, '0'
-    call LCD1602_DATA
-    ld a, 'K'
-    call LCD1602_DATA
-    ld a, 'a'
-    call LCD1602_DATA
-    ld a, 'a'
-    call LCD1602_DATA
-    ld a, '!'
-    call LCD1602_DATA
-    ld a, ' '
-    call LCD1602_DATA
-    ld a, ' '
-    call LCD1602_DATA
 
-    pop bc
-    pop af
-    ret
-
-print
-    push af
-    push hl
-    push bc
-    ld hl, text
-    ld bc, end_text - text
-t_loop
-    ld a,(hl) ;первый символ
-    call  LCD1602_DATA
+print1602
+    ld hl, Text
+prloop
+    ld a,(hl)
+    and a
+    ret z
+    call LCD1602_DATA
     inc hl
-    dec bc
-    ld a, b ; проверка на ноль BC
-    or c
-    jr nz, t_loop ;если не ноль, то на круг
-    pop bc
-    pop hl
-    pop af
-    ret
+    jr prloop
 
-text
-    db "Z-80 Rulezzz"
-end_text
-    db 00
+Text db "Jeckas rulez!!!  ", 0
 
 
 LCD1602_CMD
@@ -153,14 +116,10 @@ LCD1602_CMD
     push af
     ld a, 0b10000000
     out (0xfe), a
-
     call delay100
     pop af
     out (0xfd), a
     call delay100
-
-    ;ld a, 0b00000000
-    ;out (0xfe), a
     ret
 
 LCD1602_DATA
@@ -168,22 +127,17 @@ LCD1602_DATA
     push af
     ld a, 0b10000100
     out (0xfe), a
-
     call delay100
     pop af
     out (0xfd), a
     call delay100
-
-    ;ld a, 0b00000000
-    ;out (0xfe), a
-
     ret
 
 ; Процедура задержки
 delay100
     push af
     push bc
-    ld bc, 1000
+    ld bc, 100
 delay
     dec bc
     ld a, b

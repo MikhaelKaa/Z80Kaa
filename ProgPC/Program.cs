@@ -4,7 +4,6 @@ using System.IO.Ports;
 class ProgPC
 {
     static SerialPort port;
-
     internal enum Prog_cmd : int
     {
         version = 0,
@@ -22,10 +21,8 @@ class ProgPC
     };
 
     static byte[] temrorary_buf = new byte[64];
-
     static void Main(string[] args)
     {
-
         string file_name;
         string port_name;
         // Аргументы.
@@ -46,19 +43,15 @@ class ProgPC
         byte[] file_bytes = new byte[0x8000];
         stream.Read(file_bytes, 0, 0x8000);
 
-
-
+        /*
         // получаем список доступных портов 
         string[] ports = SerialPort.GetPortNames();
-
-
         Console.WriteLine("Найдены следующие порты:");
-
         // выводим список портов
         for (int i = 0; i < ports.Length; i++)
         {
             Console.WriteLine("[" + i.ToString() + "] " + ports[i].ToString());
-        }
+        }*/
 
         port = new SerialPort(
             port_name,
@@ -93,27 +86,16 @@ class ProgPC
                     temrorary_buf[j] = file_bytes[i*64 + j];
                 }
                 SendData(temrorary_buf);
-                Thread.Sleep(5);
+                //Thread.Sleep(1);
                 Console.WriteLine("send cmd write adr {0}" , i * 64);
                 SendCmd((int)Prog_cmd.write, i * 64);
-                Thread.Sleep(5);
+                //Thread.Sleep(1);
             }
 
-            //Console.WriteLine("send cmd read");
-            //SendCmd((int)Prog_cmd.read, 0x7fc0);
-            //Thread.Sleep(100);
-
-            //Console.WriteLine("send cmd dbg_print");
-            //SendCmd((int)Prog_cmd.dbg_print, 0x7fc0);
-            //Thread.Sleep(100);
-
-            //Console.WriteLine("send cmd cpu resume");
-            //SendCmd((int)Prog_cmd.cpu_resume);
-            //Thread.Sleep(3);
-            Console.WriteLine("send cmd cpu reset");
+            Console.WriteLine("send cmd cpu start");
             SendCmd((int)Prog_cmd.cpu_start);
 
-            Thread.Sleep(3000);
+            Thread.Sleep(300);
             port.Close();
             Environment.Exit(0);
         }
@@ -134,7 +116,6 @@ class ProgPC
         data[5] = 0x00; // 
         data[6] = 0x00; // 
         data[7] = 0x00; // 
-
 
         port.Write(data, 0, 8);
         //  Отправляем запрос, ждем 10 мс и смотрим что пришло в ответ
@@ -173,6 +154,5 @@ class ProgPC
     static void SendData(byte[] buf)
     {
         port.Write(buf, 0, buf.Length);
-        Thread.Sleep(1);
     }
 }
