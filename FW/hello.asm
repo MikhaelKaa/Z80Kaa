@@ -57,7 +57,7 @@ loop:
     jp (skip)
 
 up
-    call LCD1602
+    call print  ;LCD1602
     jp (skip)
 
 down
@@ -116,10 +116,36 @@ LCD1602
     call LCD1602_DATA
     ld a, ' '
     call LCD1602_DATA
-    
+    ld a, ' '
+    call LCD1602_DATA
+
     pop bc
     pop af
     ret
+
+print
+    push af
+    push hl
+    push bc
+    ld hl, text
+    ld bc, end_text - text
+t_loop
+    ld a,(hl) ;первый символ
+    call  LCD1602_DATA
+    inc hl
+    dec bc
+    ld a, b ; проверка на ноль BC
+    or c
+    jr nz, t_loop ;если не ноль, то на круг
+    pop bc
+    pop hl
+    pop af
+    ret
+
+text
+    db "Z-80 Rulezzz"
+end_text
+    db 00
 
 
 LCD1602_CMD

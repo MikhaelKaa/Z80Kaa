@@ -93,10 +93,10 @@ class ProgPC
                     temrorary_buf[j] = file_bytes[i*64 + j];
                 }
                 SendData(temrorary_buf);
-                Thread.Sleep(10);
+                Thread.Sleep(5);
                 Console.WriteLine("send cmd write adr {0}" , i * 64);
                 SendCmd((int)Prog_cmd.write, i * 64);
-                Thread.Sleep(10);
+                Thread.Sleep(5);
             }
 
             //Console.WriteLine("send cmd read");
@@ -137,8 +137,8 @@ class ProgPC
 
 
         port.Write(data, 0, 8);
-        //  Отправляем запрос, ждем 20 мс и смотрим что пришло в ответ
-        Thread.Sleep(20);
+        //  Отправляем запрос, ждем 10 мс и смотрим что пришло в ответ
+        //Thread.Sleep(10);
 
         int bytes_cnt = port.BytesToRead;
         //Console.WriteLine(bytes_cnt.ToString());
