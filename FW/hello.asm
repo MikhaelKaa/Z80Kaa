@@ -15,7 +15,25 @@ interrupt
     push af
     push bc
     ;int programm
+    ld a, 0b00000000
+    out (0xfe), a
+    ld bc, 1000
+    call delay_bc
 
+    ld a, 0b00000001
+    out (0xfe), a
+    ld bc, 1000
+    call delay_bc
+
+    ld a, 0b00000000
+    out (0xfe), a
+    ld bc, 1000
+    call delay_bc
+
+    ld a, 0b00000001
+    out (0xfe), a
+    ld bc, 1000
+    call delay_bc
     ; end int programm
     ld bc, 256
 intdelay
@@ -35,6 +53,28 @@ start:
     ; Разрешаем прерывания.
     ei    
     ld a,0
+
+    ld a, 0b00000000
+    out (0xfe), a
+    ld bc, 4000
+    call delay_bc
+
+    ld a, 0b00000001
+    out (0xfe), a
+    ld bc, 4000
+    call delay_bc
+
+    ld a, 0b00000000
+    out (0xfe), a
+    ld bc, 4000
+    call delay_bc
+
+    ld a, 0b00000001
+    out (0xfe), a
+    ld bc, 4000
+    call delay_bc
+
+    ;call LCD1602_init
 loop:
     ; Увеличиваем регистр а.
     ;inc a
@@ -57,99 +97,74 @@ loop:
     jp (skip)
 
 up
-    call print1602  ;LCD1602
+    ld hl, Text
+    call print1602_hl  ;LCD1602
     jp (skip)
 
 down
-    call LCD1602_init
+    call lcd_init;LCD1602_init
     jp (skip)
 ok
-    ld a, 0b00000000
-    out (0xfe), A
-    call delay100
-    call delay100
-    call delay100
-    call delay100
-    
-    ld a, 0b00000001
-    out (0xfe), A
+    ld a, (cnt)
+    dec a
+    ld (cnt), a
+    out (0xff), a
+    ld bc, 4000
+    call delay_bc
 skip
     ; Задержка.
-    call delay100
+    ld bc, 25000
+    call delay_bc
 
     jr loop 
 
 ; Процедура инициализвции LCD1602
-LCD1602_init
-    push af
-    push bc
-    ld a, 0x38
-    call LCD1602_CMD
-    ld a, 0x0c
-    call LCD1602_CMD
-    ld a, 0x06
-    call LCD1602_CMD
-    ld a, 0x01
-    call LCD1602_CMD
-    ld a, 0x80
-    call LCD1602_CMD
-    pop bc
-    pop af
-    ret
-
-
-print1602
-    ld hl, Text
-prloop
+lcd_init
+    ld hl, lcd_init_seq
+    ld bc, 5
+lcd_init_loop
     ld a,(hl)
-    and a
-    ret z
-    call LCD1602_DATA
-    inc hl
-    jr prloop
-
-Text db "Z80Kaa board", 0
-
-
-LCD1602_CMD
-    call delay100
-    push af
-    ld a, 0b10000000
-    out (0xfe), a
-    call delay100
-    pop af
-    out (0xfd), a
-    call delay100
-    ret
-
-LCD1602_DATA
-    call delay100
-    push af
-    ld a, 0b10000100
-    out (0xfe), a
-    call delay100
-    pop af
-    out (0xfd), a
-    call delay100
-    ret
-
-; Процедура задержки
-delay100
-    push af
+    out (0xfc), a
     push bc
-    ld bc, 100
-delay
+    ld bc, 300
+    call delay_bc
+    inc hl
+    pop bc
     dec bc
     ld a, b
     or c
-    jr nz, delay
-    pop bc
+    jr nz, lcd_init_loop
+    ret
+
+lcd_init_seq db 0x38, 0x0c, 0x06, 0x01, 0x80
+
+print1602_hl
+    ld a,(hl)
+    and a
+    ret z
+    out (0xfd), a
+    ld bc, 300
+    call delay_bc
+    inc hl
+    jr print1602_hl
+
+Text db "Z80Kaa board ", 0
+
+; Процедура задержки
+delay_bc
+    push af
+    ;push bc
+delay_loop
+    dec bc
+    ld a, b
+    or c
+    jr nz, delay_loop
+    ;pop bc
     pop af
     ret
 
 cnt db 0
-portfe db 0
-
+;portfe db 0
 
 end:
     ; Выводим размер банарника.
