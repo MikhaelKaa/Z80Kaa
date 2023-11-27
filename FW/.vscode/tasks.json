@@ -42,7 +42,7 @@
     {
       "label": "STLink Write MCU Default",
       "type": "shell",
-      "command": "PCProg.exe COM9 test.bin",
+      "command": "PCProg.exe COM9 out.bin",
       "options": {
         "cwd": "${workspaceRoot}",
         "shell": {

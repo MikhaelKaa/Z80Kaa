@@ -1,6 +1,6 @@
 
 build:
-	sjasmplus hello.asm --syntax=F 
+	sjasmplus main.asm --syntax=F --inc
 
 clean:
 	rm -f *.bin
