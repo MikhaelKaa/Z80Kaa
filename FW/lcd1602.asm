@@ -8,18 +8,16 @@ lcd_delay_time EQU 8
 ; Процедура инициализвции LCD1602.
 lcd_init
     ld hl, lcd_init_seq
-    ld bc, 5
+    ld de, 5
 lcd_init_loop
     ld a,(hl)
     out (lcd_port_cmd), a
-    push bc
     ld bc, lcd_delay_time
-    call delay_bc
+    call delay
     inc hl
-    pop bc
-    dec bc
-    ld a, b
-    or c
+    dec de
+    ld a, d
+    or e
     jr nz, lcd_init_loop
     ret
 
@@ -30,9 +28,13 @@ lcd_print
     ret z
     out (lcd_port_data), a
     ld bc, lcd_delay_time
-    call delay_bc
+    call delay
     inc hl
     jr lcd_print
+
+lcd_put
+    out (lcd_port_data), a
+    ret
 
 lcd_clear
     ld a, 1
@@ -47,6 +49,37 @@ lcd_set_cursor
 lcd_cmd
     out (lcd_port_cmd), a
     ret
+
+; a - адрес,
+; hl - адрес 8 байт шрифта.
+lcd_create
+    and a, 7    ; Оставляем только 3 младщих бита
+    rla
+    rla
+    rla
+    add a, 0x40
+    out (lcd_port_cmd), a
+    ld bc, lcd_delay_time
+    call delay
+    ld de, 8
+lcd_create_loop
+    ld a,(hl)
+    out (lcd_port_data), a
+    ld bc, lcd_delay_time
+    call delay
+    inc hl
+    dec de
+    ld a, d
+    or e
+    jr nz, lcd_create_loop
+    ;ld a, 0
+    ;out (lcd_port_cmd), a
+    ret
+
+; https://maxpromer.github.io/LCD-Character-Creator/
+lcd_custom_char_0 db 0x09, 0x16, 0x0A, 0x15, 0x0E, 0x04, 0x04, 0x0E
+lcd_custom_char_1 db 0x00, 0x00, 0x0A, 0x00, 0x11, 0x0E, 0x00, 0x00
+lcd_custom_char_2 db 0x0E, 0x15, 0x0E, 0x0A, 0x04, 0x0E, 0x0E, 0x11
 
 ; Последовательность команд LCD1602 для инициализации дисплея.
 lcd_init_seq db 0x38, 0x0c, 0x06, 0x01, 0x80

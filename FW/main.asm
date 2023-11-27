@@ -16,7 +16,7 @@ begin:
     call lcd_clear
     ld hl, Int_msg
     ld bc, 400
-    call delay_bc
+    call delay
     call lcd_print
     ; end int programm
     ld bc, 256
@@ -41,26 +41,26 @@ start
     ld a, 0b00000000
     out (0xfe), a
     ld bc, 40000
-    call delay_bc
+    call delay
 
     ld a, 0b00000001
     out (0xfe), a
     ld bc, 40000
-    call delay_bc
+    call delay
 
     ld a, 0b00000000
     out (0xfe), a
     ld bc, 40000
-    call delay_bc
+    call delay
 
     ld a, 0b00000001
     out (0xfe), a
     ld bc, 40000
-    call delay_bc
+    call delay
 
     call lcd_init
     ld bc, 500
-    call delay_bc
+    call delay
     ld hl, Hello_msg
     call lcd_print
 
@@ -80,16 +80,32 @@ loop:
     jp (skip)
 
 up
-    ld hl, Test_msg
-    call lcd_print 
+    ;ld hl, Test_msg
+    ;call lcd_print 
+    ld hl, lcd_custom_char_0
+    ld a, 0
+    call lcd_create
+    ld bc, 100
+    call delay
+    ld hl, lcd_custom_char_1
+    ld a, 1
+    call lcd_create
     jp (skip)
 
 down
-    call lcd_clear
+    ;call lcd_clear
+    ld a, 0
+    call lcd_put
+    ld bc, 100
+    call delay
+    ld a, 1
+    call lcd_put   
     jp (skip)
 ok
-    ld a, 40
-    call lcd_set_cursor
+    call lcd_clear
+
+    ;ld a, 40
+    ;call lcd_set_cursor
     
     ;ld a, (cnt)
     ;dec a
@@ -100,24 +116,19 @@ ok
 skip
     ; Задержка.
     ld bc, 25000
-    call delay_bc
+    call delay
 
     jr loop 
 
     ; Драйвер экрана
     include lcd1602.asm
 
-
-
 ; Процедура задержки
-delay_bc
-    push af
-delay_loop
+delay
     dec bc
     ld a, b
     or c
-    jr nz, delay_loop
-    pop af
+    jr nz, delay
     ret
 
 ; Различные переменные и константы.
