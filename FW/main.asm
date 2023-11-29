@@ -80,28 +80,46 @@ loop:
     jp (skip)
 
 up
+    ld hl, (menu_obj)
+    inc (hl)
+    ;inc (hl)
+    
     ;ld hl, Test_msg
     ;call lcd_print 
-    ld hl, lcd_custom_char_0
-    ld a, 0
-    call lcd_create
-    ld bc, 100
-    call delay
-    ld hl, lcd_custom_char_1
-    ld a, 1
-    call lcd_create
+    ;ld hl, lcd_custom_char_0
+    ;ld a, 0
+    ;call lcd_create
+    ;ld bc, 100
+    ;call delay
+    ;ld hl, lcd_custom_char_1
+    ;ld a, 1
+    ;call lcd_create
+    ;ld bc, 100
+    ;call delay
+    ;ld hl, lcd_custom_char_2
+    ;ld a, 2
+    ;call lcd_create
     jp (skip)
 
 down
+    ld hl, (menu_obj)
+    dec (hl)
+    ;dec (hl)
     ;call lcd_clear
-    ld a, 0
-    call lcd_put
-    ld bc, 100
-    call delay
-    ld a, 1
-    call lcd_put   
+    ;ld a, 0
+    ;call lcd_put
+    ;ld bc, 100
+    ;call delay
+    ;ld a, 1
+    ;call lcd_put
+    ;ld bc, 100
+    ;call delay
+    ;ld a, 2
+    ;call lcd_put
+    
     jp (skip)
 ok
+    
     call lcd_clear
 
     ;ld a, 40
@@ -117,6 +135,12 @@ skip
     ; Задержка.
     ld bc, 25000
     call delay
+
+    ld hl, (menu_obj+2)
+    call lcd_print 
+    ld bc, 250
+    call delay
+    call lcd_home
 
     jr loop 
 
@@ -136,6 +160,28 @@ Test_msg db "test message", 0
 Hello_msg db "Z80Kaa board", 0
 Int_msg db "interrupt", 0
 warn_msg db "warning", 0
+msg db 0x74, 0x6f, 0x73, 0x79, 0x61, 0
+
+
+menu_obj defw menu_obj_0
+menu defw menu_obj_0, menu_obj_1, menu_obj_2, 0
+menu_obj_0 defw menu_0
+menu_obj_0_text db "menu_0", 0
+menu_0
+
+    ret
+
+menu_obj_1 defw menu_1
+menu_obj_1_text db "menu_1", 0
+menu_1
+
+    ret
+
+menu_obj_2 defw menu_2
+menu_obj_2_text db "menu_2", 0
+menu_2
+
+    ret
 
 cnt db 0
 
