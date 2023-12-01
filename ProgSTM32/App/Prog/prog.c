@@ -49,11 +49,9 @@ const uint8_t answer_ver[8] = {0x55, answer, 'v', '0', '0', '1', 0x00, 0x00};
 uint8_t (*prog_out)(uint8_t* Buf, uint16_t Len);
 
 void prog_in(uint8_t* Buf, uint16_t Len) {
-    //printf("packet len=%d\r\n", Len);
     uint16_t adr = 0;
     // Все входящие данные размером 8 и заголовком 0x55 интерпретируем как команды.
     if( (Len == sizeof(prog_packet_t)) && (PACK->header = head) ) {
-        //printf("header if 0x55\r\n");
         switch (PACK->command)
         {
         case version:
@@ -137,7 +135,6 @@ void prog_in(uint8_t* Buf, uint16_t Len) {
         printf("new 64 bytes\r\n");
         memcpy(temporary_buf, Buf, sizeof(temporary_buf));
         if(prog_out) prog_out((uint8_t*)&answer_ok, sizeof(answer_ok));
-        //mem_print(temporary_buf, 0, sizeof(temporary_buf));
     }
     
 }

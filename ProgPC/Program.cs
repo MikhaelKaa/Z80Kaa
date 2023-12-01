@@ -34,7 +34,7 @@ class ProgPC
         } else
         {
             Console.WriteLine("Имя файла с данными для записи по умолчанию test.bin");
-            file_name = "C:\\Users\\Kaa\\Documents\\Speccy\\Z80Kaa\\FW\\test.bin";
+            file_name = "C:\\Users\\Kaa\\Documents\\Speccy\\Z80Kaa\\FW\\out.bin";
             Console.WriteLine("Имя порта по умолчанию COM9");
             port_name = "COM9";
         }
@@ -42,16 +42,6 @@ class ProgPC
         FileStream stream = new FileStream(file_name, FileMode.Open, FileAccess.Read);
         byte[] file_bytes = new byte[0x8000];
         stream.Read(file_bytes, 0, 0x8000);
-
-        /*
-        // получаем список доступных портов 
-        string[] ports = SerialPort.GetPortNames();
-        Console.WriteLine("Найдены следующие порты:");
-        // выводим список портов
-        for (int i = 0; i < ports.Length; i++)
-        {
-            Console.WriteLine("[" + i.ToString() + "] " + ports[i].ToString());
-        }*/
 
         port = new SerialPort(
             port_name,
@@ -86,10 +76,8 @@ class ProgPC
                     temrorary_buf[j] = file_bytes[i*64 + j];
                 }
                 SendData(temrorary_buf);
-                //Thread.Sleep(1);
                 Console.WriteLine("send cmd write adr {0}" , i * 64);
                 SendCmd((int)Prog_cmd.write, i * 64);
-                //Thread.Sleep(1);
             }
 
             Console.WriteLine("send cmd cpu start");
@@ -118,36 +106,19 @@ class ProgPC
         data[7] = 0x00; // 
 
         port.Write(data, 0, 8);
-        //  Отправляем запрос, ждем 10 мс и смотрим что пришло в ответ
-        //Thread.Sleep(10);
+
 
         int bytes_cnt = port.BytesToRead;
-        //Console.WriteLine(bytes_cnt.ToString());
         if (bytes_cnt > 0)
         {
             byte[] answer = new byte[(int)port.BytesToRead];
             answer_str = port.ReadExisting();
             string text = System.Text.Encoding.UTF8.GetString(answer, 2, 4);
-            //if(bytes_cnt == 8) Console.WriteLine(answer_str);
-            //Console.WriteLine(port.BytesToRead);
-            /*switch (cmd)
-            {
-                case 0 :
-                if(port.ReadExisting() == "v001") Console.WriteLine(port.ReadExisting());
-                else Console.WriteLine("unknown protocol");
-                    break;
 
-
-
-                default:
-                    break;
-            }*/
             return 0;
         }
 
         return -1;
-        //  Если не пришло вообще никакого ответа,
-        //   возвращаем отрицательное значение
     }
 
     // Отпрравка массива данных.
