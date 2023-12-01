@@ -1,6 +1,7 @@
     ; указываем ассемблеру, что целевая платформа - spectrum48, хотя это и не так, но похуй...
     device ZXSPECTRUM48
     ;SIZE 32768
+    
 begin:
     org 0x0000
     ; Запрещаем прерывания.
@@ -33,6 +34,7 @@ intdelay
 
     org 0x0100 
 start
+    
     ; Устанавливаем дно стека.
     ld sp, 0x7fff
     ; Разрешаем прерывания.
@@ -43,7 +45,7 @@ start
     ld bc, 40000
     call delay
 
-    ld a, 0b00000001
+    ld a, 0b00001111
     out (0xfe), a
     ld bc, 40000
     call delay
@@ -53,7 +55,7 @@ start
     ld bc, 40000
     call delay
 
-    ld a, 0b00000001
+    ld a, 0b00001111
     out (0xfe), a
     ld bc, 40000
     call delay
@@ -80,8 +82,14 @@ loop:
     jp (skip)
 
 up
-    ld hl, (menu_obj)
-    inc (hl)
+    ld a, (cnt)
+    inc a
+    ld (cnt), a
+    out (0xff), a
+    ld bc, 400
+    call delay
+    ;ld hl, (menu_obj)
+    ;inc (hl)
     ;inc (hl)
     
     ;ld hl, Test_msg
@@ -102,8 +110,14 @@ up
     jp (skip)
 
 down
-    ld hl, (menu_obj)
-    dec (hl)
+    ld a, (cnt)
+    dec a
+    ld (cnt), a
+    out (0xff), a
+    ld bc, 400
+    call delay
+    ;ld hl, (menu_obj)
+    ;dec (hl)
     ;dec (hl)
     ;call lcd_clear
     ;ld a, 0
@@ -119,7 +133,6 @@ down
     
     jp (skip)
 ok
-    
     call lcd_clear
 
     ;ld a, 40
@@ -130,17 +143,17 @@ ok
     ;ld (cnt), a
     ;out (0xff), a
     ;ld bc, 4000
-   ; call delay_bc
+    ;call delay
 skip
     ; Задержка.
     ld bc, 25000
     call delay
 
-    ld hl, (menu_obj+2)
-    call lcd_print 
-    ld bc, 250
-    call delay
-    call lcd_home
+    ;;ld hl, (menu_obj+2)
+    ;call lcd_print 
+    ;ld bc, 250
+    ;call delay
+    ;call lcd_home
 
     jr loop 
 
@@ -182,7 +195,7 @@ menu_obj_2_text db "menu_2", 0
 menu_2
 
     ret
-
+port_ff  EQU 0xff
 cnt db 0
 
 end:
