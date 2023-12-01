@@ -67,15 +67,15 @@ start
     call lcd_print
 
 loop:
-    in a, (0xfe)
+    in a, (port_kb)
     cp a, 0b11111101
     jp z, up
 
-    in a, (0xfe)
+    in a, (port_kb)
     cp a, 0b11111011
     jp z, down
 
-    in a, (0xfe)
+    in a, (port_kb)
     cp a, 0b11111110
     jp z, ok
 
@@ -85,75 +85,27 @@ up
     ld a, (cnt)
     inc a
     ld (cnt), a
-    out (0xff), a
+    out (port_pwm), a
     ld bc, 400
     call delay
-    ;ld hl, (menu_obj)
-    ;inc (hl)
-    ;inc (hl)
-    
-    ;ld hl, Test_msg
-    ;call lcd_print 
-    ;ld hl, lcd_custom_char_0
-    ;ld a, 0
-    ;call lcd_create
-    ;ld bc, 100
-    ;call delay
-    ;ld hl, lcd_custom_char_1
-    ;ld a, 1
-    ;call lcd_create
-    ;ld bc, 100
-    ;call delay
-    ;ld hl, lcd_custom_char_2
-    ;ld a, 2
-    ;call lcd_create
     jp (skip)
 
 down
     ld a, (cnt)
     dec a
     ld (cnt), a
-    out (0xff), a
+    out (port_pwm), a
     ld bc, 400
     call delay
-    ;ld hl, (menu_obj)
-    ;dec (hl)
-    ;dec (hl)
-    ;call lcd_clear
-    ;ld a, 0
-    ;call lcd_put
-    ;ld bc, 100
-    ;call delay
-    ;ld a, 1
-    ;call lcd_put
-    ;ld bc, 100
-    ;call delay
-    ;ld a, 2
-    ;call lcd_put
-    
+
     jp (skip)
 ok
     call lcd_clear
 
-    ;ld a, 40
-    ;call lcd_set_cursor
-    
-    ;ld a, (cnt)
-    ;dec a
-    ;ld (cnt), a
-    ;out (0xff), a
-    ;ld bc, 4000
-    ;call delay
 skip
     ; Задержка.
     ld bc, 25000
     call delay
-
-    ;;ld hl, (menu_obj+2)
-    ;call lcd_print 
-    ;ld bc, 250
-    ;call delay
-    ;call lcd_home
 
     jr loop 
 
@@ -195,7 +147,8 @@ menu_obj_2_text db "menu_2", 0
 menu_2
 
     ret
-port_ff  EQU 0xff
+port_pwm  EQU 0xff
+port_kb  EQU 0xfe
 cnt db 0
 
 end:

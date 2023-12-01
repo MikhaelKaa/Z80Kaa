@@ -68,7 +68,6 @@ set_location_assignment PIN_5 -to adr[0]
 set_location_assignment PIN_1 -to rst
 set_location_assignment PIN_2 -to adr[2]
 set_location_assignment PIN_4 -to adr[1]
-set_location_assignment PIN_44 -to a9
 set_location_assignment PIN_39 -to lcd_e
 set_location_assignment PIN_40 -to lcd_rs
 set_location_assignment PIN_41 -to lcd_rw
