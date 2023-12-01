@@ -66,7 +66,7 @@ start
     ld hl, Hello_msg
     call lcd_print
 
-loop:
+loop
     in a, (port_kb)
     cp a, 0b11111101
     jp z, up
