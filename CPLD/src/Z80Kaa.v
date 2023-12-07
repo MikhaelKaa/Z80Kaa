@@ -29,8 +29,8 @@ output lcd_rs,
 // Keyboard
 output KBD,
 
-// div
-output div
+// pwm
+output pwm
 );
 
 // io
@@ -42,14 +42,14 @@ wire port_lcd =  ~adr[1];
 wire kbd_rd = (iord | ~(adr[1] & ~adr[0]));
 
 // CPU clock & PWM cnt
-reg [7:0] clk_div = 8'b0;
+reg [7:0] clk_pwm = 8'b0;
 // register fe (gpio)
 reg [7:0] reg_fe = 8'b0;
 // register ff (PWM)
 reg [7:0] reg_ff = 8'b0;
 
 always@(negedge in_clock) begin
-	clk_div = clk_div + 1'b1;
+	clk_pwm = clk_pwm + 1'b1;
 end
 
 always @(negedge iowr) begin
@@ -60,11 +60,11 @@ always @(negedge iowr) begin
 end
 
 // Z80 clock.
-assign cpu_clock = clk_div[1];
+assign cpu_clock = clk_pwm[1];
 // PWM
-assign div    = reg_fe[1]?(reg_ff >= clk_div):(1'b1);
+assign pwm    = reg_fe[1]?(reg_ff >= clk_pwm):(1'b1);
 // Z80 Interrupt
-assign intrpt = busrq?(~(clk_div == 0)):(1'b1);
+assign intrpt = busrq?(~(clk_pwm == 0)):(1'b1);
 // Keyboard
 assign KBD    = busrq?((kbd_rd)?(1'bz):(1'b0)):(1'bz); // fe read
 // LCD

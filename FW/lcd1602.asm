@@ -50,6 +50,11 @@ lcd_cmd
     out (lcd_port_cmd), a
     ret
 
+lcd_print_num
+    adc a, 48
+    out (lcd_port_data), a
+    ret
+
 ; a - адрес,
 ; hl - адрес 8 байт шрифта.
 lcd_create

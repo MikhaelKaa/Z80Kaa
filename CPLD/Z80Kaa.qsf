@@ -74,7 +74,7 @@ set_location_assignment PIN_41 -to lcd_rw
 set_location_assignment PIN_31 -to led
 set_location_assignment PIN_37 -to KBD
 set_location_assignment PIN_33 -to busrq
-set_location_assignment PIN_34 -to div
 set_location_assignment PIN_11 -to intrpt
 set_location_assignment PIN_8 -to gpio8
 set_location_assignment PIN_9 -to gpio9
+set_location_assignment PIN_34 -to pwm
