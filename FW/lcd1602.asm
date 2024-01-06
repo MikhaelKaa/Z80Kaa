@@ -44,6 +44,16 @@ lcd_home
     ld a, 2
     jp lcd_cmd
 
+;lcd_font1
+    ;ld a, 0b00101000
+    ;jp lcd_cmd
+
+;lcd_font2
+    ;ld a, 0b00101010
+    ;jp lcd_cmd
+
+
+
 lcd_set_cursor
     set 7, a
 lcd_cmd

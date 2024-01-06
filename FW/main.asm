@@ -46,23 +46,35 @@ start
 
     ld a, 0b00000000
     out (0xfe), a
-    ld bc, 40000
+    ld bc, 20000
     call delay
 
     ld a, 0b00001111
     out (0xfe), a
-    ld bc, 40000
+    ld bc, 20000
     call delay
 
     ld a, 0b00000000
     out (0xfe), a
-    ld bc, 40000
+    ld bc, 20000
     call delay
 
     ld a, 0b00001111
     out (0xfe), a
-    ld bc, 40000
+    ld bc, 20000
     call delay
+
+    ld a, 0b00000000
+    out (0xfe), a
+    ld bc, 20000
+    call delay
+
+    ld a, 0b00001111
+    out (0xfe), a
+    ld bc, 20000
+    call delay
+
+
 
     call lcd_init
     ld bc, 500
@@ -92,6 +104,7 @@ loop
     jp (skip)
 
 up
+set_time
     ld a, 0b10000000
     ld (0x7ff8), a
     ld bc, 20
@@ -113,12 +126,32 @@ up
 
     jp (skip)
 
+set_font1_test
+    ;call lcd_font1
+    ld bc, 20
+    call delay
+
+    jp (skip)
+
+set_font2_test
+    ;call lcd_font2
+    ld bc, 20
+    call delay
+
+    jp (skip)
+
+
 down 
-    ld hl, msg_startup
+test_pre_ny
+    ld hl, msg_pre_ny
     call lcd_print
     ld de, startup_end - startup
     ld hl, startup
     call test_pwm_loop
+
+    ld bc, 40000
+    call delay
+    call lcd_clear
 
     ld bc, 400
     call delay
@@ -131,7 +164,7 @@ ok
     ;ld de, tada_end - tada
     ;ld hl, tada
     ;call test_pwm_loop
-    jr loop 
+    jp loop 
 
 skip
     ;ld a, 0b01000000
@@ -277,6 +310,7 @@ Hello_msg db "Z80Kaa board", 0
 Int_msg db "interrupt", 0
 warn_msg db "warning", 0
 msg_startup db "startup", 0
+msg_pre_ny db "C Hac", 0xbf, "y", 0xbe, "a", 0xc6, 0xe6, 0xb8, 0xbc, 0
 
 msg db 0x74, 0x6f, 0x73, 0x79, 0x61, 0
 

@@ -34,7 +34,8 @@ class ProgPC
         } else
         {
             Console.WriteLine("Имя файла с данными для записи по умолчанию test.bin");
-            file_name = "C:\\Users\\Kaa\\Documents\\Speccy\\Z80Kaa\\FW\\out.bin";
+            //file_name = "C:\\Users\\Kaa\\Documents\\Speccy\\Z80Kaa\\FW\\out.bin";
+            file_name = "C:\\Users\\Kaa\\Documents\\Speccy\\zs-pentagon\\FW\\out.bin";
             Console.WriteLine("Имя порта по умолчанию COM9");
             port_name = "COM9";
         }
