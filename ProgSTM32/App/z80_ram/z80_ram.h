@@ -11,8 +11,9 @@
 #define Z80_DEBUG_ENV (0)
 
 // Значение объема памяти микросхемы M48Z35Y или аналогичной.
-#define RAM_LEN (0x8000)
-#if (RAM_LEN != 0x8000) 
+// Значение объема памяти установлено в 65536 байт.
+#define RAM_LEN (0xffff)
+#if (RAM_LEN != 0xffff) 
 #error 
 #endif
 

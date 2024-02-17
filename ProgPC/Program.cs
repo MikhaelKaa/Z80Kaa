@@ -25,24 +25,71 @@ class ProgPC
     {
         string file_name;
         string port_name;
+        int start_adr = 0;
+        int file_lenght  = 0xffff;
+
         // Аргументы.
         Console.WriteLine(args.Length);
-        if(args.Length == 2)
+
+        switch (args.Length)
         {
-            port_name = args[0];
-            file_name = args[1];
-        } else
-        {
-            Console.WriteLine("Имя файла с данными для записи по умолчанию test.bin");
-            //file_name = "C:\\Users\\Kaa\\Documents\\Speccy\\Z80Kaa\\FW\\out.bin";
-            file_name = "C:\\Users\\Kaa\\Documents\\Speccy\\zs-pentagon\\FW\\out.bin";
-            Console.WriteLine("Имя порта по умолчанию COM9");
-            port_name = "COM9";
+            case 2:
+                port_name = args[0];
+                file_name = args[1];
+                break;
+
+            case 4:
+
+                port_name = args[0];
+
+                file_name = args[1];
+
+                try
+                {
+                    start_adr = int.Parse(args[2]);
+                    Console.WriteLine("Start adr = {0}", start_adr);
+                    Thread.Sleep(1000);
+                }
+                catch (FormatException e)
+                {
+                    Console.WriteLine("Argument 2 error. Exit.");
+                    Thread.Sleep(300);
+                    Environment.Exit(0);
+                }
+
+                try
+                {
+                    file_lenght = int.Parse(args[3]);
+                    Console.WriteLine("Lenght = {0}", file_lenght);
+                    Thread.Sleep(1000);
+                }
+                catch (FormatException e)
+                {
+                    Console.WriteLine("Argument 3 error. Exit.");
+                    Thread.Sleep(300);
+                    Environment.Exit(0);
+                }
+                break;
+
+
+            default:
+                Console.WriteLine("Имя файла с данными для записи по умолчанию test.bin");
+                //file_name = "C:\\Users\\Kaa\\Documents\\Speccy\\Z80Kaa\\FW\\out.bin";
+                file_name = "C:\\Users\\Kaa\\Documents\\Speccy\\zs-pentagon\\FW\\out.bin";
+                Console.WriteLine("Имя порта по умолчанию COM9");
+                port_name = "COM9";
+                Console.WriteLine("start_adr = 0");
+                start_adr = 0;
+                Console.WriteLine("file_lenght = 0x8000");
+                file_lenght = 0x8000;
+                break;
         }
 
+
+
         FileStream stream = new FileStream(file_name, FileMode.Open, FileAccess.Read);
-        byte[] file_bytes = new byte[0x8000];
-        stream.Read(file_bytes, 0, 0x8000);
+        byte[] file_bytes = new byte[file_lenght];
+        stream.Read(file_bytes, start_adr, file_lenght);
 
         port = new SerialPort(
             port_name,
@@ -55,7 +102,16 @@ class ProgPC
         if (port.IsOpen == true)
             port.Close();
 
-        port.Open();
+        try
+        {
+            port.Open();
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Cant open port. Exit");
+            Thread.Sleep(300);
+            Environment.Exit(0);
+        }
 
 
 
@@ -69,8 +125,9 @@ class ProgPC
             SendCmd((int)Prog_cmd.cpu_suspend);
             Thread.Sleep(100);
 
-            Console.WriteLine("send 64*512 bytes");
-            for (int i = 0; i < 512; i++)
+            Console.WriteLine("send bytes {0}", file_lenght);
+            Thread.Sleep(3000);
+            for (int i = 0; i < file_lenght/64; i++)
             {
                 for(int j = 0; j < 64; j++)
                 {

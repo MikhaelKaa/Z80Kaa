@@ -62,7 +62,7 @@ void prog_in(uint8_t* Buf, uint16_t Len) {
         case read:
             adr = *((uint16_t*)&(PACK->cmd_data[0]));
             printf("read from adr=0x%04x\r\n", adr);
-            if(z80_ram_read_block(temporary_buf, adr, sizeof(temporary_buf)) != 0) {
+            if(z80_ram_read_block(temporary_buf, adr, sizeof(temporary_buf)) /*!= 0*/) {
                 printf("z80_ram_read_block error\r\n");
                 if(prog_out) prog_out((uint8_t*)&answer_fail, sizeof(answer_fail));
                 break;
@@ -74,7 +74,7 @@ void prog_in(uint8_t* Buf, uint16_t Len) {
         case write:
             adr = *((uint16_t*)&(PACK->cmd_data[0]));
             printf("write to adr=0x%04x\r\n", adr);
-            if(z80_ram_write_block(temporary_buf, adr, sizeof(temporary_buf)) != 0) {
+            if(z80_ram_write_block(temporary_buf, adr, sizeof(temporary_buf)) /*!= 0*/) {
                 printf("z80_ram_write_block error\r\n");
                 if(prog_out) prog_out((uint8_t*)&answer_fail, sizeof(answer_fail));
                 break;
