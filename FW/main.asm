@@ -6,9 +6,11 @@ begin:
     org 0x0000
     ; Запрещаем прерывания.
     di
+    ld bc, 8192
+    call delay
     jp start
 
-    org 0x0038
+    org 0x0038 ; 56 
     di
     push af
     push bc
@@ -17,14 +19,14 @@ begin:
     ;int programm
     call lcd_clear
     ld hl, Int_msg
+    call lcd_print
     ld bc, 400
     call delay
-    call lcd_print
     call test_sq
     
     ; end int programm
     ld bc, 65535
-intdelay
+intdelay:
     dec bc
     ld a,b
     or c
@@ -37,58 +39,54 @@ intdelay
     reti
 
     org 0x0100
-start
+start:
     
     ; Устанавливаем дно стека.
-    ld sp, 0x7ff7
+    ld sp, 0x7ff7  ; M48T35, с часами.
+    ;ld sp, 0x7fff ; M48Z35Y, без часов.
     ; Разрешаем прерывания.
     ei    
 
-    ld a, 0b00000000
-    out (0xfe), a
-    ld bc, 20000
-    call delay
+    ; Моргаем светодиодом
+    ld a, 0 ; 0b00000000
+    call port_fe_and_delay
 
-    ld a, 0b00001111
-    out (0xfe), a
-    ld bc, 20000
-    call delay
+    ld a, 0b00000001
+    call port_fe_and_delay
 
     ld a, 0b00000000
-    out (0xfe), a
-    ld bc, 20000
-    call delay
+    call port_fe_and_delay
 
     ld a, 0b00001111
-    out (0xfe), a
-    ld bc, 20000
-    call delay
+    call port_fe_and_delay
 
     ld a, 0b00000000
+    call port_fe_and_delay
+
+    ld a, 0b00000001
+    call port_fe_and_delay
+
+    ; Включим ШИМ и подсветку LCD1602
+    ld a, 0b00001010
     out (0xfe), a
-    ld bc, 20000
-    call delay
 
-    ld a, 0b00001111
-    out (0xfe), a
-    ld bc, 20000
-    call delay
-
-
-
+    ; Инициализация 1602
     call lcd_init
+
     ld bc, 500
     call delay
+
     ld hl, Hello_msg
     call lcd_print
-
+    
+    ;
     ld de, startup_end - startup
     ld hl, startup
     call test_pwm_loop
 
     call lcd_clear
 
-loop
+main_loop:  
     in a, (port_kb)
     cp a, 0b11111110
     jp z, ok
@@ -103,46 +101,12 @@ loop
 
     jp (skip)
 
-up
-set_time
-    ld a, 0b10000000
-    ld (0x7ff8), a
-    ld bc, 20
-    call delay
-
-    ld a, 0x55
-    ld (0x7ff9), a
-
-    ld a, 0x58
-    ld (0x7ffa), a  
-
-    ld a, 0x21
-    ld (0x7ffb), a  
-
-    ld a, 0b00000000
-    ld (0x7ff8), a
-    ld bc, 20
-    call delay
-
+up:
+    call set_time
     jp (skip)
 
-set_font1_test
-    ;call lcd_font1
-    ld bc, 20
-    call delay
-
-    jp (skip)
-
-set_font2_test
-    ;call lcd_font2
-    ld bc, 20
-    call delay
-
-    jp (skip)
-
-
-down 
-test_pre_ny
+down:
+test_pre_ny:
     ld hl, msg_pre_ny
     call lcd_print
     ld de, startup_end - startup
@@ -159,19 +123,13 @@ test_pre_ny
 
  
     jp (skip)
-ok
+ok:
     call lcd_clear
-    ;ld de, tada_end - tada
-    ;ld hl, tada
-    ;call test_pwm_loop
-    jp loop 
+    jp main_loop 
 
-skip
-    ;ld a, 0b01000000
-    ;ld (0x7ff8), a
-    ;ld bc, 20
-    ;call delay
+skip:
 
+    ;call show_time
     ld a, (0x7ffb)
     rra
     rra
@@ -230,26 +188,21 @@ skip
     ld bc, 20
     call delay
 
-    ;ld a, 0b00000000
-    ;ld (0x7ff8), a
-    ;ld bc, 20
-    ;call delay
-
     call lcd_home
 
     ; Задержка.
     ld bc, 25000
     call delay
 
-    jp loop 
+    jp main_loop 
 
     ; Драйвер экрана
     include lcd1602.asm
+    include m48t35.asm
 
-test_sq
+test_sq:
     ld de, 1024
-test_sq_loop
-
+.loop:
     ld a, e
     ;cpl
     out (port_pwm), a
@@ -257,7 +210,7 @@ test_sq_loop
     dec de
     ld a, d
     or e
-    jr nz, test_sq_loop
+    jr nz, test_sq.loop ; можно просто .loop 
     ret
 
 ;test_pwm
@@ -265,7 +218,7 @@ test_sq_loop
     ;ld hl, pwm_sin_128
     ;ld de, tada_end - tada
     ;ld hl, tada
-test_pwm_loop
+test_pwm_loop:
     
     ld bc, 25
     nop
@@ -297,12 +250,18 @@ pwm_sin_128_end
 
 
 ; Процедура задержки
-delay
+delay:
     dec bc
     ld a, b
     or c
     jr nz, delay
     ret
+
+; Запишет в порт 0xfe содержимое аккумулятора     
+port_fe_and_delay
+    out (0xfe), a
+    ld bc, 20000
+    call delay
 
 ; Различные переменные и константы.
 Test_msg db "test message", 0
@@ -341,10 +300,10 @@ cnt db 0
 ;tada
     ;incbin "tada.wav", 45
 ;tada_end
-startup
+startup:
     ;incbin "startup.wav", 0x86, 30000
     incbin "tada.wav", 0x86
-startup_end
+startup_end:
 
 
 end:

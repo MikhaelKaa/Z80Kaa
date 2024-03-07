@@ -26,7 +26,7 @@ class ProgPC
         string file_name;
         string port_name;
         int start_adr = 0;
-        int file_lenght  = 0xffff;
+        int file_lenght  = 0x7fff;
 
         // Аргументы.
         Console.WriteLine(args.Length);

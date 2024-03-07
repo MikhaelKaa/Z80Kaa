@@ -40,6 +40,7 @@
       "problemMatcher": []
     },
     {
+      //"label": "Write Z80 BBSRAM",
       "label": "STLink Write MCU Default",
       "type": "shell",
       "command": "PCProg.exe COM9 out.bin",
