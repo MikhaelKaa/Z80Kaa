@@ -85,109 +85,57 @@ start:
     call test_pwm_loop
 
     call lcd_clear
+    ld bc, 500
+    call delay
 
 main_loop:  
-    in a, (port_kb)
-    cp a, 0b11111110
-    jp z, ok
+;     in a, (port_kb)
+;     cp a, 0b11111110
+;     jp z, ok
 
-    in a, (port_kb)
-    cp a, 0b11111101
-    jp z, up
+;     in a, (port_kb)
+;     cp a, 0b11111101
+;     jp z, up
 
-    in a, (port_kb)
-    cp a, 0b11111011
-    jp z, down
+;     in a, (port_kb)
+;     cp a, 0b11111011
+;     jp z, down
 
-    jp (skip)
+;     jp (skip)
 
-up:
-    call set_time
-    jp (skip)
+; up:
+;     call set_time
+;     jp (skip)
 
-down:
-test_pre_ny:
-    ld hl, msg_pre_ny
-    call lcd_print
-    ld de, startup_end - startup
-    ld hl, startup
-    call test_pwm_loop
+; down:
+; test_pre_ny:
+;     ld hl, msg_pre_ny
+;     call lcd_print
+;     ld de, startup_end - startup
+;     ld hl, startup
+;     call test_pwm_loop
 
-    ld bc, 40000
-    call delay
-    call lcd_clear
+;     ld bc, 40000
+;     call delay
+;     call lcd_clear
 
-    ld bc, 400
-    call delay
-    call lcd_home
+;     ld bc, 400
+;     call delay
+;     call lcd_home
 
  
-    jp (skip)
-ok:
-    call lcd_clear
-    jp main_loop 
+;     jp (skip)
+; ok:
+;     call lcd_clear
+;     jp main_loop 
+;     jp (skip)
 
-skip:
+; skip:
 
-    ;call show_time
-    ld a, (0x7ffb)
-    rra
-    rra
-    rra
-    rra
-    and a, 0b00000011
-    call lcd_print_num  
-    ld bc, 10
-    call delay
+    call show_time
     
-    ld a, (0x7ffb)
-    and a, 0b00001111
-    call lcd_print_num
-    ld bc, 10
+    ld bc, 2500
     call delay
-
-    ld a, 0x3a
-    call lcd_put
-    ld bc, 10
-    call delay
-
-    ld a, (0x7ffa)
-    rra
-    rra
-    rra
-    rra
-    and a, 0b00000111
-    call lcd_print_num  
-    ld bc, 10
-    call delay
-    
-    ld a, (0x7ffa)
-    and a, 0b00001111
-    call lcd_print_num
-    ld bc, 10
-    call delay
-
-    ld a, 0x3a
-    call lcd_put
-    ld bc, 10
-    call delay
-
-    ld a, (0x7ff9)
-    rra
-    rra
-    rra
-    rra
-    and a, 0b00000111
-    call lcd_print_num  
-    ld bc, 20
-    call delay
-    
-    ld a, (0x7ff9)
-    and a, 0b00001111
-    call lcd_print_num
-    ld bc, 20
-    call delay
-
     call lcd_home
 
     ; Задержка.
