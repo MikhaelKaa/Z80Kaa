@@ -32,6 +32,12 @@ lcd_print:
     inc hl
     jr lcd_print
 
+lcd_newline
+    ld a, 0b10101010
+    call lcd_cmd
+    ret
+
+; Вывод одного символа.
 lcd_put
     out (lcd_port_data), a
     ret
@@ -78,7 +84,7 @@ lcd_create
     call delay
     ld de, 8
 lcd_create_loop
-    ld a,(hl)
+    ld a, (hl)
     out (lcd_port_data), a
     ld bc, lcd_delay_time
     call delay
