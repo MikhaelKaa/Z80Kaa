@@ -3,7 +3,7 @@ build:
 	sjasmplus main.asm --syntax=F --inc
 
 flash:
-	PCProg.exe COM9 out.bin
+	PCProg.exe COM18 out.bin
 
 clean:
 	rm -f *.bin

@@ -18,6 +18,22 @@
 				"C:/arm_tool/OpenOCD/xpack-openocd-0.11.0-3/scripts/interface/stlink.cfg",
 				"C:/arm_tool/OpenOCD/xpack-openocd-0.11.0-3/scripts/target/STM32F1x.cfg"
 			]
+		},
+		{
+			"name": "Cortex Debug by picoprobe",
+			"cwd": "${workspaceRoot}",
+			"executable": "./build/prog.elf",
+			"svdFile": "./STM32F103xx.svd",
+			"request": "launch",
+			"type": "cortex-debug",
+			"servertype": "openocd",
+			"interface": "swd",
+			//"adapter speed": "500",
+			"runToEntryPoint": "main",
+			"configFiles": [
+				"cmsis-dap.cfg",
+				"stm32f1x.cfg"
+			]
 		}
 	]
 }
